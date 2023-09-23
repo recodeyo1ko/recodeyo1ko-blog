@@ -11,7 +11,7 @@ import type {
 export type Blog = {
   id: string;
   title: string;
-  body: string;
+  content: string;
   eyecatch?: MicroCMSImage;
   category?: Category;
   tags?: Tag[];
