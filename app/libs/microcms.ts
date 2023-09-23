@@ -1,3 +1,5 @@
+// libs/microcms.ts
+
 import { createClient } from "microcms-js-sdk";
 import type {
   MicroCMSQueries,
@@ -9,8 +11,28 @@ import type {
 export type Blog = {
   id: string;
   title: string;
-  content: string;
+  body: string;
   eyecatch?: MicroCMSImage;
+  category?: Category;
+  tags?: Tag[];
+} & MicroCMSDate;
+
+//props用
+
+export type BlogProps = {
+  contents: Blog[];
+};
+
+//タグの型定義
+export type Tag = {
+  id: string;
+  name: string;
+} & MicroCMSDate;
+
+//カテゴリーの型定義
+export type Category = {
+  id: string;
+  name: string;
 } & MicroCMSDate;
 
 if (!process.env.MICROCMS_SERVICE_DOMAIN) {
@@ -35,7 +57,7 @@ export const getList = async (queries?: MicroCMSQueries) => {
   });
 
   // データの取得が目視しやすいよう明示的に遅延効果を追加
-  await new Promise((resolve) => setTimeout(resolve, 3000));
+  //await new Promise((resolve) => setTimeout(resolve, 3000));
 
   return listData;
 };
@@ -53,6 +75,66 @@ export const getDetail = async (
 
   // データの取得が目視しやすいよう明示的に遅延効果を追加
   await new Promise((resolve) => setTimeout(resolve, 3000));
+
+  return detailData;
+};
+
+// タグ一覧を取得
+export const getTagList = async (queries?: MicroCMSQueries) => {
+  const listData = await client.getList<Tag>({
+    endpoint: "tags",
+    queries,
+  });
+
+  // データの取得が目視しやすいよう明示的に遅延効果を追加
+  //await new Promise((resolve) => setTimeout(resolve, 3000));
+
+  return listData;
+};
+
+// タグの詳細を取得
+export const getTagDetail = async (
+  contentId: string,
+  queries?: MicroCMSQueries
+) => {
+  const detailData = await client.getListDetail<Tag>({
+    endpoint: "tags",
+    contentId,
+    queries,
+  });
+
+  // データの取得が目視しやすいよう明示的に遅延効果を追加
+  //await new Promise((resolve) => setTimeout(resolve, 3000));
+
+  return detailData;
+};
+
+// カテゴリ一覧を取得
+export const getCategoryList = async (queries?: MicroCMSQueries) => {
+  const listData = await client.getList<Category>({
+    endpoint: "categories",
+    queries,
+  });
+
+  // データの取得が目視しやすいよう明示的に遅延効果を追加
+  //await new Promise((resolve) => setTimeout(resolve, 3000));
+
+  return listData;
+};
+
+// カテゴリの詳細を取得
+export const getCategoryDetail = async (
+  contentId: string,
+  queries?: MicroCMSQueries
+) => {
+  const detailData = await client.getListDetail<Category>({
+    endpoint: "categories",
+    contentId,
+    queries,
+  });
+
+  // データの取得が目視しやすいよう明示的に遅延効果を追加
+  //await new Promise((resolve) => setTimeout(resolve, 3000));
 
   return detailData;
 };
