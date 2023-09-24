@@ -1,6 +1,6 @@
 export const Sidebar = () => {
   return (
-    <div className="sm:w-1/3 text-center sm:pr-8 sm:py-8 m-auto">
+    <div className="mx-10 text-center sm:pr-8 sm:py-8 m-auto">
       <div className="w-20 h-20 rounded-full inline-flex items-center justify-center bg-gray-800 text-gray-600">
         <svg
           fill="none"
