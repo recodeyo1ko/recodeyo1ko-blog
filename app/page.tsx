@@ -200,9 +200,11 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-3">
-            <div className="flex justify-center lg:justify-center px-4 py-3 items-center gap-2 rounded-md border-2 border-gray-200 font-semibold text-blue-500 hover:text-white hover:bg-blue-500 hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:border-gray-700 dark:hover:border-blue-500">
-              <Link href="/static">すべての記事を見る</Link>
-            </div>
+            <Link href="/blogs">
+              <div className="flex justify-center lg:justify-center px-4 py-3 items-center gap-2 rounded-md border-2 border-gray-200 font-semibold text-blue-500 hover:text-white hover:bg-blue-500 hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:border-gray-700 dark:hover:border-blue-500">
+                すべての記事を見る
+              </div>
+            </Link>
           </div>
         </div>
         <div className="lg:col-span-1">

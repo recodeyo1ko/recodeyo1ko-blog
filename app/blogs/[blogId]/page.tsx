@@ -5,9 +5,9 @@ import { getDetail, getList } from "../../libs/microcms";
 export async function generateStaticParams() {
   const { contents } = await getList();
 
-  const paths = contents.map((post) => {
+  const paths = contents.map((blog) => {
     return {
-      postId: post.id,
+      blogId: blog.id,
     };
   });
 
@@ -15,16 +15,16 @@ export async function generateStaticParams() {
 }
 
 export default async function StaticDetailPage({
-  params: { postId },
+  params: { blogId },
 }: {
-  params: { postId: string };
+  params: { blogId: string };
 }) {
-  const post = await getDetail(postId);
+  const blog = await getDetail(blogId);
 
   // ページの生成された時間を取得
   const time = new Date().toLocaleString();
 
-  if (!post) {
+  if (!blog) {
     notFound();
   }
 
@@ -33,13 +33,13 @@ export default async function StaticDetailPage({
       <div className="bg-white py-6 sm:py-8 lg:py-12">
         <div className="mx-auto max-w-screen-md px-4 md:px-8">
           <h1 className="mb-4 text-center text-2xl font-bold text-gray-800 sm:text-3xl md:mb-6">
-            {post.title}
+            {blog.title}
           </h1>
           <div className="flex justify-end">
             <div>投稿日時：{time}</div>
           </div>
 
-          <div>{parse(post.content)}</div>
+          <div>{parse(blog.content)}</div>
         </div>
       </div>
     </div>

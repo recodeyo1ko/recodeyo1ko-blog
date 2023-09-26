@@ -1,10 +1,10 @@
 import Link from "next/link";
 
-const Post = (props: { id: any; title: any; eyecatch: any }) => {
-  const { id, title, eyecatch } = props;
+const Blog = (props: { id: any; title: any; eyecatch: any; category: any }) => {
+  const { id, title, eyecatch, category } = props;
 
   return (
-    <Link href={`/static/${id}`}>
+    <Link href={`/blogs/${id}`}>
       <div className="flex flex-col overflow-hidden rounded-lg border bg-white">
         <div className="flex flex-1 flex-col p-4 sm:p-6">
           {eyecatch ? ( // eyecatch データが存在するか確認
@@ -23,10 +23,11 @@ const Post = (props: { id: any; title: any; eyecatch: any }) => {
               {title}
             </div>
           </h2>
+          <h3>{category.name}</h3>
         </div>
       </div>
     </Link>
   );
 };
 
-export default Post;
+export default Blog;
