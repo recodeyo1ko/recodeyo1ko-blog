@@ -33,6 +33,7 @@ export default async function BlogPage() {
                     title={blog.title}
                     eyecatch={blog.eyecatch}
                     category={blog.category}
+                    tags={blog.tags}
                   />
                 </div>
               );
