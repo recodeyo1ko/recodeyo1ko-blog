@@ -1,12 +1,4 @@
 import Link from "next/link";
-import {
-  ReactElement,
-  JSXElementConstructor,
-  ReactNode,
-  ReactPortal,
-  PromiseLikeOfReactNode,
-  Key,
-} from "react";
 
 const Blog = (props: {
   id: any;
@@ -39,14 +31,16 @@ const Blog = (props: {
           </h2>
           <h3>{category.name}</h3>
           <div>
-            {tags.map((tag: string, index: Key | null | undefined) => (
-              <button
-                key={index}
-                className="px-2 py-1 mr-2 text-sm font-medium text-white bg-indigo-500 rounded-full hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
-                {tag}
-              </button>
-            ))}
+            {tags.map((tag: any) => {
+              return (
+                <button
+                  className="px-2 py-1 mr-2 text-sm font-medium text-white bg-indigo-500 rounded-full hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  key={tag.id}
+                >
+                  {tag.name}
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
