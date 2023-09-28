@@ -46,9 +46,9 @@ export default async function StaticDetailPage({
           </div>
           <div>
             <div>タグ</div>
-            {blog.tags.map((tag: any) => {
+            {/* {blog.tags.map((tag: any) => {
               return <TagButton id={tag.id} name={tag.name} />;
-            })}
+            })} */}
           </div>
 
           <div
