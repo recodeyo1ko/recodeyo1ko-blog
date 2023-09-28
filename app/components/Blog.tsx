@@ -10,7 +10,6 @@ const Blog = async (props: {
   tags: any;
 }) => {
   const { id, title, eyecatch, category, tags } = props;
-
   return (
     <Link href={`/blogs/${id}`}>
       <div className="flex flex-col overflow-hidden rounded-lg border bg-white">
@@ -32,9 +31,11 @@ const Blog = async (props: {
             </div>
           </h2>
           <div className="mb-2">
+            <div>カテゴリー</div>
             <CategoryButton name={category.name} />
           </div>
           <div>
+            <div>タグ</div>
             {tags.map((tag: any) => {
               return <TagButton id={tag.id} name={tag.name} />;
             })}

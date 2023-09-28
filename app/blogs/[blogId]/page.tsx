@@ -51,7 +51,11 @@ export default async function StaticDetailPage({
             })}
           </div>
 
-          <div>{parse(blog.content)}</div>
+          <div
+            dangerouslySetInnerHTML={{
+              __html: `${blog.content}`,
+            }}
+          />
         </div>
       </div>
     </div>
