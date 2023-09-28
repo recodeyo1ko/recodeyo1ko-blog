@@ -1,8 +1,15 @@
 import Link from "next/link";
+import TagButton from "./TagButton";
+import CategoryButton from "./CategoryButton";
 
-const Blog = (props: { id: any; title: any; eyecatch: any; category: any }) => {
-  const { id, title, eyecatch, category } = props;
-
+const Blog = async (props: {
+  id: any;
+  title: any;
+  eyecatch: any;
+  category: any;
+  tags: any;
+}) => {
+  const { id, title, eyecatch, category, tags } = props;
   return (
     <Link href={`/blogs/${id}`}>
       <div className="flex flex-col overflow-hidden rounded-lg border bg-white">
@@ -23,7 +30,16 @@ const Blog = (props: { id: any; title: any; eyecatch: any; category: any }) => {
               {title}
             </div>
           </h2>
-          <h3>{category.name}</h3>
+          <div className="mb-2">
+            <div>カテゴリー</div>
+            <CategoryButton name={category.name} />
+          </div>
+          <div>
+            <div>タグ</div>
+            {tags.map((tag: any) => {
+              return <TagButton id={tag.id} name={tag.name} />;
+            })}
+          </div>
         </div>
       </div>
     </Link>
