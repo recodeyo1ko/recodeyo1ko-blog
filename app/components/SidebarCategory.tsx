@@ -9,7 +9,6 @@ export default async function SidebarCategory() {
   }
   return (
     <div>
-      <div className="py-2">カテゴリー</div>
       {contents.map((category) => {
         return (
           <button

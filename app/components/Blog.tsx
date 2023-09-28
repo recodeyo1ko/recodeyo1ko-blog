@@ -1,6 +1,8 @@
 import Link from "next/link";
+import TagButton from "./TagButton";
+import CategoryButton from "./CategoryButton";
 
-const Blog = (props: {
+const Blog = async (props: {
   id: any;
   title: any;
   eyecatch: any;
@@ -29,17 +31,12 @@ const Blog = (props: {
               {title}
             </div>
           </h2>
-          <h3>{category.name}</h3>
+          <div className="mb-2">
+            <CategoryButton name={category.name} />
+          </div>
           <div>
             {tags.map((tag: any) => {
-              return (
-                <button
-                  className="px-2 py-1 mr-2 text-sm font-medium text-white bg-indigo-500 rounded-full hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                  key={tag.id}
-                >
-                  {tag.name}
-                </button>
-              );
+              return <TagButton id={tag.id} name={tag.name} />;
             })}
           </div>
         </div>

@@ -30,6 +30,7 @@ export const Sidebar = () => {
         </div>
       </div>
       <div className="my-10">
+        <div className="py-2">カテゴリー</div>
         <SidebarCategory></SidebarCategory>
       </div>
     </div>

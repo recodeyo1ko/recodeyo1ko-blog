@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import parse from "html-react-parser";
 import { getDetail, getList } from "../../libs/microcms";
+import TagButton from "@/app/components/TagButton";
+import CategoryButton from "@/app/components/CategoryButton";
 
 export async function generateStaticParams() {
   const { contents } = await getList();
@@ -37,6 +39,16 @@ export default async function StaticDetailPage({
           </h1>
           <div className="flex justify-end">
             <div>投稿日時：{time}</div>
+          </div>
+          <div>
+            <div>カテゴリー</div>
+            <CategoryButton name={blog.category.name} />
+          </div>
+          <div>
+            <div>タグ</div>
+            {blog.tags.map((tag: any) => {
+              return <TagButton id={tag.id} name={tag.name} />;
+            })}
           </div>
 
           <div>{parse(blog.content)}</div>

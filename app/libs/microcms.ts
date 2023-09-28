@@ -15,8 +15,8 @@ export type Blog = {
   title: string;
   content: string;
   eyecatch?: MicroCMSImage;
-  category?: Category;
-  tags?: Tag[];
+  category: Category;
+  tags: Tag[];
 } & MicroCMSDate;
 
 //props用
