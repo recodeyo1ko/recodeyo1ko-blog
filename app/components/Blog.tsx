@@ -36,9 +36,9 @@ const Blog = async (props: {
           </div>
           <div>
             <div>タグ</div>
-            {tags.map((tag: any) => {
+            {/* {tags.map((tag: any) => {
               return <TagButton id={tag.id} name={tag.name} />;
-            })}
+            })} */}
           </div>
         </div>
       </div>
