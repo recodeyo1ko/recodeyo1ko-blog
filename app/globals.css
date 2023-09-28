@@ -5,3 +5,216 @@
 body {
   margin: 0 auto;
 }
+/* Markdownクラス内のスタイル */
+.markdown {
+  line-height: 1.6;
+}
+
+.markdown h1 {
+  margin-top: 50px;
+  font-size: 1.9rem;
+  font-weight: bold;
+  margin-bottom: 3rem;
+  color: #444; /* Dark grey text color */
+}
+
+.markdown h2 {
+  margin-top: 30px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  border-left: 5px solid #2ecc71; /* Green border */
+  padding-left: 0.5rem;
+  color: #444;
+  background-color: white;
+}
+
+.markdown h3 {
+  font-weight: bold;
+  text-decoration: underline;
+  margin-top: 20px;
+  font-size: 1.3rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: #444;
+}
+
+.markdown h4 {
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-top: 1.2rem;
+  margin-bottom: 0.3rem;
+  color: #555; /* Slightly darker grey text color */
+}
+
+.markdown ul {
+  list-style-type: disc;
+  margin-left: 2rem;
+  padding-left: 10px;
+}
+
+.markdown li {
+  font-weight: bold;
+  padding: 3px;
+}
+
+.markdown ol {
+  list-style-type: decimal;
+  margin-left: 2rem;
+}
+
+.markdown a {
+  color: #3498db; /* Blue link color */
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.markdown a:hover {
+  color: #2574a9; /* Hover color */
+  text-decoration: underline;
+}
+
+.markdown pre {
+  background-color: #555; /* Light grey background */
+  padding: 1rem;
+  padding-top: 1rem;
+  padding-bottom: 0.1rem;
+  border-radius: 5px;
+  overflow-x: auto;
+  color: #f0f0f0;
+  margin-bottom: 30px;
+  margin-top: 30px;
+}
+
+.markdown pre > code {
+  background-color: #555;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-family: "Fira Code", monospace; /* Monospace font for code */
+  color: #f0f0f0;
+}
+.markdown div {
+  position: relative;
+}
+
+.markdown code {
+  background-color: #dde1e3;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-family: "Fira Code", monospace; /* Monospace font for code */
+  color: #c13b3b;
+}
+
+.markdown div div[data-filename]::before {
+  content: attr(data-filename); /* data-filename属性の値を表示 */
+  color: #000; /* テキスト色 */
+  background-color: #fff;
+  padding: 0.25rem 0.5rem;
+  border-top-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  position: absolute;
+}
+
+.markdown blockquote {
+  border-left: 5px solid #ccc; /* Light grey border */
+  padding-left: 1rem;
+  margin: 10px;
+  margin-left: 2rem;
+  color: #666; /* Grey text color */
+  font-style: italic;
+}
+
+.markdown hr {
+  border: none;
+  border-top: 2px solid #eee; /* Light grey border */
+  margin: 1.5rem 0;
+}
+
+.markdown img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1.5rem auto;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Light shadow */
+}
+
+/* メディアクエリを追加 */
+@media (max-width: 768px) {
+  .markdown h1 {
+    font-size: 1.3rem;
+  }
+
+  .markdown h2 {
+    font-size: 1.1rem;
+  }
+
+  .markdown h3 {
+    font-size: 0.9rem;
+  }
+
+  .markdown h4 {
+    font-size: 0.8rem;
+  }
+
+  .markdown ul {
+    margin-left: 1rem;
+  }
+
+  .markdown ol {
+    margin-left: 1rem;
+  }
+
+  .markdown pre {
+    font-size: 0.9rem;
+  }
+
+  .markdown code {
+    font-size: 0.9rem;
+  }
+
+  .markdown blockquote {
+    font-size: 1rem;
+  }
+}
+
+.timeline {
+  list-style: none;
+}
+.timeline > li {
+  margin-bottom: 60px;
+}
+
+/* for Desktop */
+@media (min-width: 640px) {
+  .timeline > li {
+    overflow: hidden;
+    margin: 0;
+    position: relative;
+  }
+  .timeline-date {
+    width: 110px;
+    float: left;
+    margin-top: 20px;
+  }
+  .timeline-content {
+    width: 75%;
+    float: left;
+    border-left: 3px #e5e5d1 solid;
+    padding-left: 30px;
+    padding-top: 20px;
+  }
+  .timeline-content:before {
+    content: "";
+    width: 12px;
+    height: 12px;
+    background: #837ccf;
+    position: absolute;
+    left: 106px;
+    top: 24px;
+    border-radius: 100%;
+  }
+}

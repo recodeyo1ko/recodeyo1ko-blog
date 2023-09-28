@@ -3,6 +3,8 @@ import parse from "html-react-parser";
 import { getDetail, getList } from "../../libs/microcms";
 import TagButton from "@/app/components/TagButton";
 import CategoryButton from "@/app/components/CategoryButton";
+import cheerio from "cheerio";
+import hljs from "highlight.js";
 
 export async function generateStaticParams() {
   const { contents } = await getList();
@@ -25,6 +27,13 @@ export default async function StaticDetailPage({
 
   // ページの生成された時間を取得
   const time = new Date().toLocaleString();
+
+  const content = cheerio.load(blog.content); // data.bodyはmicroCMSから返されるリッチエディタ部分
+  content("pre code").each((_, elm) => {
+    const result = hljs.highlightAuto(content(elm).text());
+    content(elm).html(result.value);
+    content(elm).addClass("hljs");
+  });
 
   if (!blog) {
     notFound();
@@ -50,12 +59,9 @@ export default async function StaticDetailPage({
               return <TagButton id={tag.id} name={tag.name} />;
             })} */}
           </div>
-
-          <div
-            dangerouslySetInnerHTML={{
-              __html: `${blog.content}`,
-            }}
-          />
+          <div className="p-4 markdown">
+            <div dangerouslySetInnerHTML={{ __html: content.html() }}></div>
+          </div>
         </div>
       </div>
     </div>
