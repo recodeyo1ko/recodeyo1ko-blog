@@ -1,4 +1,5 @@
 import SidebarCategory from "./SidebarCategory";
+import SidebarTags from "./SidebarTags";
 
 export const Sidebar = () => {
   return (
@@ -31,7 +32,11 @@ export const Sidebar = () => {
       </div>
       <div className="my-10">
         <div className="py-2">カテゴリー</div>
-        <SidebarCategory></SidebarCategory>
+        <SidebarCategory />
+      </div>
+      <div className="my-10">
+        <div className="py-2">タグ</div>
+        <SidebarTags />
       </div>
     </div>
   );
