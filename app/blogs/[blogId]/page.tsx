@@ -5,6 +5,7 @@ import TagButton from "@/app/components/TagButton";
 import CategoryButton from "@/app/components/CategoryButton";
 import cheerio from "cheerio";
 import hljs from "highlight.js";
+import Sidebar from "@/app/components/Sidebar";
 
 export async function generateStaticParams() {
   const { contents } = await getList();
@@ -41,19 +42,19 @@ export default async function StaticDetailPage({
 
   return (
     <div>
-      <div className="bg-white py-6 sm:py-8 lg:py-12">
-        <div className="mx-auto max-w-screen-md px-4 md:px-8">
-          <h1 className="mb-4 text-center text-2xl font-bold text-gray-800 sm:text-3xl md:mb-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 pb-5 px-10">
+        <div className="lg:col-span-2">
+          <h1 className="my-4 text-center text-2xl font-bold text-gray-800 sm:text-3xl md:mb-6">
             {blog.title}
           </h1>
           <div className="flex justify-end">
             <div>投稿日時：{time}</div>
           </div>
-          <div>
+          <div className="flex justify-end">
             <div>カテゴリー</div>
             <CategoryButton name={blog.category.name} />
           </div>
-          <div>
+          <div className="flex justify-end">
             <div>タグ</div>
             {/* {blog.tags.map((tag: any) => {
               return <TagButton id={tag.id} name={tag.name} />;
@@ -62,6 +63,9 @@ export default async function StaticDetailPage({
           <div className="p-4 markdown">
             <div dangerouslySetInnerHTML={{ __html: content.html() }}></div>
           </div>
+        </div>
+        <div className="lg:col-span-1">
+          <Sidebar />
         </div>
       </div>
     </div>
