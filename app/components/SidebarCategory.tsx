@@ -11,12 +11,12 @@ export default async function SidebarCategory() {
     <div>
       {contents.map((category) => {
         return (
-          <button
+          <div
             key={category.id}
-            className="px-2 py-1 mr-2 font-medium text-white bg-indigo-500 rounded-full hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="px-2 py-1 mr-2 my-2 font-medium text-white bg-indigo-500 rounded-md hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             {category.name}
-          </button>
+          </div>
         );
       })}
     </div>
