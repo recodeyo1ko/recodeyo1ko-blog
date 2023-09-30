@@ -13,7 +13,7 @@ export default async function SidebarTags() {
         return (
           <button
             key={tag.id}
-            className="px-2 py-1 mr-2 text-white bg-indigo-500 rounded-full hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="px-2 py-1 m-2 text-white bg-indigo-500 rounded-md hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             {tag.name}
           </button>
