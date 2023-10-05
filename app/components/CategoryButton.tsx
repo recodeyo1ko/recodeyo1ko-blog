@@ -1,12 +1,16 @@
+import Link from "next/link";
 import React from "react";
 
-const CategoryButton = (props: { name: any }) => {
+function CategoryButton(props: { name: string }) {
   const { name } = props;
   return (
-    <button className="px-2 py-1 mr-2 text-sm font-medium text-white bg-indigo-500 rounded-full hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+    <Link
+      href={`/categories/${name}`}
+      className="px-2 py-1 mr-2 text-sm font-medium text-white bg-indigo-500 rounded-full hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+    >
       {name}
-    </button>
+    </Link>
   );
-};
+}
 
 export default CategoryButton;

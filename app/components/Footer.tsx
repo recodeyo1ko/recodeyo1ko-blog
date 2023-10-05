@@ -19,7 +19,8 @@ export const Footer = () => {
             <span className="ml-3 text-xl">ReCodeYoiko</span>
           </a>
           <p className="mt-2 text-sm text-gray-500">
-            Air plant banjo lyft occupy retro adaptogen indego
+            自身のアウトプットのために作成したブログです。
+            なにかしらの参考になれば幸いです。
           </p>
         </div>
         <div className="flex-grow flex flex-wrap md:pl-20 -mb-10 md:mt-0 mt-10 md:text-left text-center">
