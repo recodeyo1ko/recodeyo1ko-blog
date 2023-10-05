@@ -1,16 +1,16 @@
 import { notFound } from "next/navigation";
 import parse from "html-react-parser";
 import { getDetail, getList } from "../../libs/microcms";
-import TagButton from "@/app/components/TagButton";
-import CategoryButton from "@/app/components/CategoryButton";
-import cheerio from "cheerio";
+import markdownHtml from "zenn-markdown-html";
+import { load } from "cheerio";
 import hljs from "highlight.js";
-import Sidebar from "@/app/components/Sidebar";
+import "highlight.js/styles/night-owl.css";
+import CategoryButton from "../../components/CategoryButton";
 
 export async function generateStaticParams() {
   const { contents } = await getList();
 
-  const paths = contents.map((blog) => {
+  const paths = contents.map((blog: { id: any }) => {
     return {
       blogId: blog.id,
     };
@@ -29,16 +29,21 @@ export default async function StaticDetailPage({
   // ページの生成された時間を取得
   const time = new Date().toLocaleString();
 
-  const content = cheerio.load(blog.content); // data.bodyはmicroCMSから返されるリッチエディタ部分
-  content("pre code").each((_, elm) => {
-    const result = hljs.highlightAuto(content(elm).text());
-    content(elm).html(result.value);
-    content(elm).addClass("hljs");
-  });
-
   if (!blog) {
     notFound();
   }
+
+  let html = markdownHtml(blog.content);
+
+  const $ = load(html);
+
+  $("pre code").each((_, elm) => {
+    const result = hljs.highlightAuto($(elm).text());
+    $(elm).html(result.value);
+    $(elm).addClass("hljs");
+  });
+  html = $.html();
+  console.log(html);
 
   return (
     <div>
@@ -59,9 +64,10 @@ export default async function StaticDetailPage({
               return <TagButton id={tag.id} name={tag.name} />;
             })} */}
         </div>
-        <div className="p-4 markdown">
-          <div dangerouslySetInnerHTML={{ __html: content.html() }}></div>
-        </div>
+        <div
+          className="markdown"
+          dangerouslySetInnerHTML={{ __html: html }}
+        ></div>
       </div>
     </div>
   );
