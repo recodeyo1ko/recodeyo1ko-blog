@@ -13,7 +13,7 @@ const MDEditor = dynamic(() => import("@uiw/react-md-editor"), {
 });
 
 // 利用しているmicroCMSのURLを設定
-const origin = "https://8ochwm57e4.microcms.io";
+const origin = process.env.NEXT_PUBLIC_MICROCMS_URL;
 
 const IndexPage = () => {
   const [markdown, setMarkdown] = useState<string | undefined>();
