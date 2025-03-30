@@ -17,11 +17,6 @@ export default function Home() {
                 このブログは、プログラミングや技術に関する情報を発信することを目的としています。
               </p>
             </div>
-
-            <div className="grid gap-4 sm:grid-cols-1 md:gap-6 lg:grid-cols-1 xl:grid-cols-1 xl:gap-8">
-              <FavoriteBlog title="おすすめ記事1" introduction="整備中" />
-              <FavoriteBlog title="おすすめ記事2" introduction="整備中" />
-            </div>
             <div className="grid py-5 lg:grid-cols-2 md:grid-cols-1">
               <Link href="/blogs">
                 <div className="flex justify-center lg:justify-center px-4 py-3 items-center gap-2 rounded-md border-2 border-gray-200 font-semibold text-blue-500 hover:text-white hover:bg-blue-500 hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:border-gray-700 dark:hover:border-blue-500">

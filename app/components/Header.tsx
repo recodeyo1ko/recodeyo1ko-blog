@@ -53,15 +53,11 @@ export const Header = () => {
               </ul>
             </div>
           </div>
-
-          <Link href={"/site_map"}>
-            <div className="mr-5 hover:text-white">サイトマップ</div>
-          </Link>
           <Link href={"/profile"}>
             <div className="mr-5 hover:text-white">プロフィール</div>
           </Link>
-          <Link href={"/contact"}>
-            <div className="mr-5 hover:text-white">問い合わせ</div>
+          <Link href={"/kitting"}>
+            <div className="mr-5 hover:text-white">キッティング</div>
           </Link>
         </nav>
       </div>
