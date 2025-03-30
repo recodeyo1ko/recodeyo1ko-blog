@@ -26,6 +26,34 @@ export const Header = () => {
           <Link href={"/"}>
             <div className="mr-5 hover:text-white">ホーム</div>
           </Link>
+          <div className="relative group inline-block">
+            <button className="mr-5 hover:text-white">業務ツール</button>
+            <div className="absolute hidden group-hover:block bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700 mt-2 z-10">
+              <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
+                <li>
+                  <Link
+                    href={"/workTimeConversion"}
+                    className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                  >
+                    人時・日・月変換
+                  </Link>
+                  <Link
+                    href={"/drinkPartyOrganizer"}
+                    className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                  >
+                    飲み会幹事
+                  </Link>
+                  <Link
+                    href={"/decimalConversion"}
+                    className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                  >
+                    60進数⇔10進数変換
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+
           <Link href={"/site_map"}>
             <div className="mr-5 hover:text-white">サイトマップ</div>
           </Link>
