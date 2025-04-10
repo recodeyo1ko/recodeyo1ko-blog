@@ -1,4 +1,4 @@
-FROM node:18.16-alpine
+FROM node:20-alpine
 WORKDIR /usr/src/app
 
 RUN npm install -g next
