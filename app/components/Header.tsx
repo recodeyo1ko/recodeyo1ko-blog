@@ -8,23 +8,20 @@ export const Header = () => {
           href={"/"}
           className="flex title-font font-medium items-center text-white mb-4 md:mb-0"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            className="w-10 h-10 text-white p-2 bg-indigo-500 rounded-full"
-            viewBox="0 0 24 24"
-          >
-            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
-          </svg>
-          <span className="ml-3 text-xl">ReCodeYoiko</span>
+          <img
+            src="/img/pixel_laptop.png"
+            alt="laptop"
+            className="w-10 h-10"
+            style={{ maxWidth: "100%" }}
+          />
+          <span className="ml-3 text-xl">仕事を頑張るために</span>
         </Link>
         <nav className="md:ml-auto flex flex-wrap items-center text-base justify-center">
           <Link href={"/"}>
             <div className="mr-5 hover:text-white">ホーム</div>
+          </Link>
+          <Link href="/blogs">
+            <div className="mr-5 hover:text-white">記事一覧</div>
           </Link>
           <div className="relative group inline-block">
             <button className="mr-5 hover:text-white">業務ツール</button>
@@ -53,9 +50,6 @@ export const Header = () => {
               </ul>
             </div>
           </div>
-          <Link href={"/profile"}>
-            <div className="mr-5 hover:text-white">プロフィール</div>
-          </Link>
           <Link href={"/kitting"}>
             <div className="mr-5 hover:text-white">キッティング</div>
           </Link>
