@@ -66,6 +66,13 @@ export const Header = () => {
                     >
                       キッティング
                     </Link>
+
+                    <Link
+                      href="/byteConversion"
+                      className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                    >
+                      Byte単位変換
+                    </Link>
                   </li>
                 </ul>
               </div>
