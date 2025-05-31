@@ -28,8 +28,8 @@ export default async function BlogPage() {
             key={blog.id}
             id={blog.id}
             title={blog.title}
-            category={blog.category}
-            tags={blog.tags}
+            category={blog.category ?? {}}
+            tags={blog.tags ?? []}
           />
         ))}
       </div>
