@@ -56,8 +56,13 @@ export default async function StaticDetailPage({
         </div>
         <div className="flex justify-end">
           <div>カテゴリー</div>
-          <CategoryButton name={blog.category.name} />
+          {blog.category?.name ? (
+            <CategoryButton name={blog.category.name} />
+          ) : (
+            <div className="ml-2 text-gray-500">未分類</div>
+          )}
         </div>
+
         <div className="flex justify-end">
           <div>タグ</div>
           {/* {blog.tags.map((tag: any) => {

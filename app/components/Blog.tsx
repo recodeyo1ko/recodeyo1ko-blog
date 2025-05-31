@@ -22,16 +22,20 @@ const Blog = async (props: {
         </Link>
       </div>
 
-      {/* ジャンル列（右寄せ） */}
+      {/* カテゴリ列（右寄せ） */}
       <div className="col-span-4 flex flex-wrap justify-end gap-2">
-        <CategoryButton name={category.name} />
+        {category?.name && <CategoryButton name={category.name} />}
       </div>
 
       {/* 技術タグ列（右寄せ） */}
-      <div className="col-span-3 flex justify-end">
-        {tags.map((tag: any) => (
-          <TagButton key={tag.id} id={tag.id} name={tag.name} />
-        ))}
+      <div className="col-span-3 flex justify-end flex-wrap gap-2">
+        {Array.isArray(tags) && tags.length > 0 ? (
+          tags.map((tag: any) => (
+            <TagButton key={tag.id} id={tag.id} name={tag.name} />
+          ))
+        ) : (
+          <div className="text-gray-400">タグなし</div>
+        )}
       </div>
     </div>
   );
