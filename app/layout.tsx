@@ -21,7 +21,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Header />
-        <div className="grid lg:grid-cols-12 md:grid-cols-1 mx-10 py-6 sm:py-8 lg:py-12">
+        <div className="grid lg:grid-cols-12 md:grid-cols-1 mx-10 py-6 sm:py-8">
           <div className="col-span-8 gap-4 overflow-hidden rounded-lg border ">
             {children}
           </div>

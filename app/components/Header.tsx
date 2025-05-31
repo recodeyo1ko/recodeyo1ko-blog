@@ -43,32 +43,26 @@ export const Header = () => {
                 <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
                   <li>
                     <Link
-                      href="/workTimeConversion"
+                      href="/useful_tools/workTimeConversion"
                       className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                     >
                       人時・日・月変換
                     </Link>
                     <Link
-                      href="/drinkPartyOrganizer"
+                      href="/useful_tools/drinkPartyOrganizer"
                       className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                     >
                       飲み会幹事
                     </Link>
                     <Link
-                      href="/decimalConversion"
+                      href="/useful_tools/decimalConversion"
                       className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                     >
                       60進数⇔10進数変換
                     </Link>
-                    <Link
-                      href="/kitting"
-                      className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                    >
-                      キッティング
-                    </Link>
 
                     <Link
-                      href="/byteConversion"
+                      href="/useful_tools/byteConversion"
                       className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                     >
                       Byte単位変換

@@ -5,44 +5,33 @@ import CategoryButton from "./CategoryButton";
 const Blog = async (props: {
   id: any;
   title: any;
-  eyecatch: any;
   category: any;
   tags: any;
 }) => {
-  const { id, title, eyecatch, category, tags } = props;
-  return (
-    <div>
-      <div className="flex flex-col overflow-hidden rounded-lg border bg-white">
-        <div className="flex flex-1 flex-col p-4 sm:p-6">
-          <Link href={`/blogs/${id}`}>
-            {eyecatch ? ( // eyecatch データが存在するか確認
-              <img
-                src={eyecatch.url}
-                alt="Eyecatch"
-                width={eyecatch.width}
-                height={eyecatch.height}
-              />
-            ) : (
-              <p>No eyecatch available</p> // データが存在しない場合の代替メッセージ
-            )}
+  const { id, title, category, tags } = props;
 
-            <h2 className="mb-2 text-lg font-semibold text-gray-800">
-              <div className="transition duration-100 hover:text-indigo-500 active:text-indigo-600">
-                {title}
-              </div>
-            </h2>
-          </Link>
-          <div className="mb-2">
-            <div>カテゴリー</div>
-            <CategoryButton name={category.name} />
-          </div>
-          <div>
-            <div>タグ</div>
-            {/* {tags.map((tag: any) => {
-              return <TagButton id={tag.id} name={tag.name} />;
-            })} */}
-          </div>
-        </div>
+  return (
+    <div className="grid grid-cols-12 items-center border-b py-4 text-base">
+      {/* タイトル列 */}
+      <div className="col-span-5">
+        <Link
+          href={`/blogs/${id}`}
+          className="text-indigo-600 hover:underline text-lg font-medium"
+        >
+          {title}
+        </Link>
+      </div>
+
+      {/* ジャンル列（右寄せ） */}
+      <div className="col-span-4 flex flex-wrap justify-end gap-2">
+        <CategoryButton name={category.name} />
+      </div>
+
+      {/* 技術タグ列（右寄せ） */}
+      <div className="col-span-3 flex justify-end">
+        {tags.map((tag: any) => (
+          <TagButton key={tag.id} id={tag.id} name={tag.name} />
+        ))}
       </div>
     </div>
   );
