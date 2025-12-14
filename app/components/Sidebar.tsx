@@ -13,7 +13,7 @@ export const Sidebar = () => {
           />
         </div>
         <div className="flex flex-col items-center justify-center">
-          <h2 className="font-medium title-font mt-4 text-gray-700 text-lg　text-center">
+          <h2 className="font-medium title-font mt-4 text-gray-700 text-lg text-center">
             ReCodeYoiko
           </h2>
           <div className="w-12 h-1 bg-indigo-500 rounded mt-2 mb-4"></div>

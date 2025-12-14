@@ -266,7 +266,7 @@ export default function MaskingToolPage() {
         マスキングツール (/useful_tools/maskingTool)
       </h1>
       <p className="mb-6 text-sm text-gray-600">
-        社名・ホスト名・パスワードなどをマスクして、生成AIに安全に貼り付けるためのツールです。
+        個別情報などをマスクして、生成AIなどに安全に貼り付けるためのツールです。
         左のテキストから固有値を選択してマスクパターンを登録するか、「自動検出」を使って候補を追加してください。
       </p>
 
@@ -322,7 +322,7 @@ export default function MaskingToolPage() {
             onFocus={(e) => e.target.select()}
           />
           <p className="mt-2 text-xs text-gray-500">
-            ※ フォーカスすると全選択されるので、そのままコピーして生成AIに貼り付けできます。
+            ※ フォーカスすると全選択されるので、そのままコピーして生成AIなどに貼り付けできます。
           </p>
         </div>
       </section>
