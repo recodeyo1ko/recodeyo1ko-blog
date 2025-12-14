@@ -67,6 +67,24 @@ export const Header = () => {
                     >
                       Byte単位変換
                     </Link>
+                    <Link
+                      href="/useful_tools/compressionTool"
+                      className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                    >
+                      クイック圧縮率チェッカー
+                    </Link>
+                    <Link
+                      href="/useful_tools/diffTool"
+                      className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                    >
+                      差分チェッカー
+                    </Link>
+                    <Link
+                      href="/useful_tools/maskingTool"
+                      className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                    >
+                      文章マスキング
+                    </Link>
                   </li>
                 </ul>
               </div>
