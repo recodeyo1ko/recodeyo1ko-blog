@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 import { getTagList } from "../libs/microcms";
 
 export default async function SidebarTags() {
@@ -11,12 +12,11 @@ export default async function SidebarTags() {
     <div>
       {contents.map((tag) => {
         return (
-          <button
-            key={tag.id}
-            className="px-2 py-1 m-2 text-white bg-indigo-500 rounded-md hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
-            {tag.name}
-          </button>
+          <Link key={tag.id} href={`/tags/${tag.name}`}>
+            <button className="px-2 py-1 m-2 text-white bg-indigo-500 rounded-md hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer">
+              {tag.name}
+            </button>
+          </Link>
         );
       })}
     </div>
