@@ -30,6 +30,7 @@ export default async function BlogPage() {
             title={blog.title}
             category={blog.category ?? {}}
             tags={blog.tags ?? []}
+            eyecatch={undefined}
           />
         ))}
       </div>
