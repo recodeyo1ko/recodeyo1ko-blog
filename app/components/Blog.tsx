@@ -5,39 +5,46 @@ import CategoryButton from "./CategoryButton";
 const Blog = async (props: {
   id: any;
   title: any;
+  eyecatch: any;
   category: any;
   tags: any;
 }) => {
-  const { id, title, category, tags } = props;
-
+  const { id, title, eyecatch, category, tags } = props;
   return (
-    <div className="grid grid-cols-12 items-center border-b py-4 text-base">
-      {/* タイトル列 */}
-      <div className="col-span-5">
-        <Link
-          href={`/blogs/${id}`}
-          className="text-indigo-600 hover:underline text-lg font-medium"
-        >
+    <tr className="border-b">
+      <td className="p-2">
+        <Link href={`/blogs/${id}`} className="hover:underline">
           {title}
         </Link>
-      </div>
-
-      {/* カテゴリ列（右寄せ） */}
-      <div className="col-span-4 flex flex-wrap justify-end gap-2">
-        {category?.name && <CategoryButton name={category.name} />}
-      </div>
-
-      {/* 技術タグ列（右寄せ） */}
-      <div className="col-span-3 flex justify-end flex-wrap gap-2">
-        {Array.isArray(tags) && tags.length > 0 ? (
+      </td>
+      <td className="p-2">
+        <CategoryButton name={category.name} />
+      </td>
+      <td className="p-2">
+        {tags && tags.length > 0 ? (
           tags.map((tag: any) => (
-            <TagButton key={tag.id} id={tag.id} name={tag.name} />
+            <Link key={tag.id} href={`/tags/${tag.name}`}>
+              <TagButton id={tag.id} name={tag.name} />
+            </Link>
           ))
         ) : (
-          <div className="text-gray-400">タグなし</div>
+          <span>-</span>
         )}
-      </div>
-    </div>
+      </td>
+      <td className="p-2">
+        {eyecatch ? (
+          <img
+            src={eyecatch.url}
+            alt="Eyecatch"
+            width={40}
+            height={40}
+            className="object-cover rounded"
+          />
+        ) : (
+          <span>-</span>
+        )}
+      </td>
+    </tr>
   );
 };
 

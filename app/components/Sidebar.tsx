@@ -19,6 +19,7 @@ export const Sidebar = () => {
           <div className="w-12 h-1 bg-indigo-500 rounded mt-2 mb-4"></div>
           <p className="text-base text-gray-400 text-left">
             自身のアウトプットのために作成したブログです。
+            機能・デザイン共に未完成な部分が多いですが、随時改善していきます。
           </p>
         </div>
       </div>
