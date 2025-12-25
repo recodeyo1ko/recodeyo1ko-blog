@@ -90,6 +90,12 @@ export const Footer = () => {
                 >
                   文章マスキング
                 </Link>
+                <Link
+                  href="/useful_tools/hankakuZenkaku"
+                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                >
+                  半角・全角変換ツール
+                </Link>
               </li>
             </nav>
           </div>
