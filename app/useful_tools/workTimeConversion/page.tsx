@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import InputForm from "./inputForm";
+import ToolHeader from "@/app/components/ToolHeader";
 
 const convertWorkTime = (
   value: number,
@@ -35,8 +36,21 @@ const WorkTimeConversionPage = () => {
   };
 
   return (
-    <div className="flex flex-col items-center min-h-screen p-4">
-      <h1 className="text-2xl font-bold mb-6">人時変換ツール</h1>
+    <div className="mx-auto min-h-screen max-w-screen-lg bg-gray-50 px-4 py-8">
+      {/* タイトルと使い方 */}
+      <ToolHeader
+        title="労働時間変換ツール"
+        description="人時・人日・人月の間で変換を行います。所定労働時間や営業日数も設定可能です。"
+        steps={
+          <>
+            <li>所定労働時間（時間/日）と営業日数（日/月）を設定します。</li>
+            <li>変換したい値と単位（人時・人日・人月）を入力します。</li>
+            <li>
+              「変換」ボタンを押すと、他の単位に変換された結果が表示されます。
+            </li>
+          </>
+        }
+      />
 
       {/* 入力カード */}
       <section className="w-full max-w-2xl border rounded-lg shadow-sm bg-white p-4 md:p-6">

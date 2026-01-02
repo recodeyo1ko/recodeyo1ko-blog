@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div>
+    <main>
       <div className="lg:col-span-2">
         <div className="bg-white">
           <div className="mx-auto max-w-screen-xl px-4 md:px-8">
@@ -26,6 +26,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

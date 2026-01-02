@@ -5,6 +5,7 @@ import GroupForm from "./GroupForm";
 import CopyArea from "./CopyArea";
 import ResultVerification from "./resultVerification";
 import BasicInputForm from "./BasicInputForm";
+import ToolHeader from "@/app/components/ToolHeader";
 
 interface Group {
   groupName: string;
@@ -69,34 +70,36 @@ const DrinkPartyOrganizerPage = () => {
     calculateTotals();
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4">
-      <h1 className="text-2xl font-bold mb-6">飲み会計算ツール</h1>
-      {/* ▼ 使い方の補足 */}
-      <div className="mb-6 max-w-2xl rounded-md border border-blue-300 bg-blue-50 px-3 py-3 text-sm text-blue-800">
-        <p className="mb-1 font-semibold">使い方</p>
-        <ul className="list-disc pl-4 space-y-1">
-          <li>
-            <b>コース料金</b> または <b>請求金額</b> のどちらかを選択し、
-            参加人数を入力します。
-          </li>
-          <li>
-            先輩・後輩、友人・同僚など<b>複数の参加グループを追加・削除</b>
-            できます。
-          </li>
-          <li>
-            グループごとに <b>人数</b> と <b>1人あたりの支払額</b>{" "}
-            を入力してください。
-          </li>
-          <li>
-            入力内容をもとに、<b>合計金額・人数のズレ</b>{" "}
-            を自動でチェックします。
-          </li>
-          <li>
-            問題なければ、下部の <b>コピーエリア</b>{" "}
-            から結果をそのまま共有できます。
-          </li>
-        </ul>
-      </div>
+    <div className="mx-auto max-w-screen-2xl px-4 py-8">
+      {/* タイトルと使い方 */}
+      <ToolHeader
+        title="飲み会計算ツール"
+        description="個別情報などをマスクして、生成AIなどに安全に貼り付けるためのツールです。"
+        steps={
+          <>
+            <li>
+              <b>コース料金</b> または <b>請求金額</b> のどちらかを選択し、
+              参加人数を入力します。
+            </li>
+            <li>
+              先輩・後輩、友人・同僚など<b>複数の参加グループを追加・削除</b>
+              できます。
+            </li>
+            <li>
+              グループごとに <b>人数</b> と <b>1人あたりの支払額</b>{" "}
+              を入力してください。
+            </li>
+            <li>
+              入力内容をもとに、<b>合計金額・人数のズレ</b>{" "}
+              を自動でチェックします。
+            </li>
+            <li>
+              問題なければ、下部の <b>コピーエリア</b>{" "}
+              から結果をそのまま共有できます。
+            </li>
+          </>
+        }
+      />
 
       {/* 請求・人数情報 */}
       <BasicInputForm

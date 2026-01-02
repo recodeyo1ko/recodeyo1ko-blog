@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import ReferenceTable from "./ReferenceTable";
+import ToolHeader from "@/app/components/ToolHeader";
 
 const parseTimeToMinutes = (time: string): number => {
   const [hours, minutes] = time.split(":").map(Number);
@@ -82,8 +83,24 @@ const DecimalConversionPage = () => {
   };
 
   return (
-    <div className="flex flex-col items-center min-h-screen p-4">
-      <h1 className="text-2xl font-bold mb-6">60進数⇔10進数変換ツール</h1>
+    <div className="mx-auto max-w-screen-2xl px-4 py-8">
+      {/* タイトルと使い方 */}
+      <ToolHeader
+        title="任意の時間を 60進数 ⇔ 10進数 変換ツール"
+        description="稼働時間の計算と、任意の時間を60進数（HH:MM形式）から10進数へ、またはその逆に変換できます。"
+        steps={
+          <>
+            機能1:
+            <li>
+              開始時間、終了時間、休憩時間を入力して「稼働時間を計算」ボタンを押すと、総稼働時間が表示されます。
+            </li>
+            機能2:
+            <li>
+              60進数（HH:MM形式）から10進数へ、またはその逆の変換を選択し、値を入力して「変換」ボタンを押すと、変換結果が表示されます。
+            </li>
+          </>
+        }
+      />
 
       <div className="w-full max-w-4xl space-y-6">
         {/*  ボックス1：稼働時間計算 */}

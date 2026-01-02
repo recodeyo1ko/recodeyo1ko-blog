@@ -1,5 +1,6 @@
 "use client";
 
+import ToolHeader from "@/app/components/ToolHeader";
 import { useState } from "react";
 
 type Mode = "toZenkaku" | "toHankaku";
@@ -102,8 +103,20 @@ const HankakuZenkakuPage = () => {
       : "例: ＡＢＣ　１２３　！？\n全角の英数字・記号・スペースを半角に変換します。";
 
   return (
-    <div className="flex flex-col items-center min-h-screen p-4 bg-gray-50">
-      <h1 className="text-2xl font-bold mb-6">半角・全角変換ツール</h1>
+    <div className="mx-auto max-w-screen-2xl px-4 py-8">
+      {/* タイトルと使い方 */}
+      <ToolHeader
+        title="半角・全角 変換ツール"
+        description="テキストの半角英数字・記号・スペースを全角に、または全角から半角に一括変換できます。"
+        steps={
+          <>
+            <li>
+              半角英数字・記号・スペースを全角に、または全角から半角に一括変換できます。
+            </li>
+            <li>ひらがな・カタカナ・漢字は変換されません。</li>
+          </>
+        }
+      />
 
       <div className="w-full max-w-4xl space-y-6">
         {/* 📦 モード選択ボックス */}

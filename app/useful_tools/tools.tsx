@@ -13,7 +13,7 @@ export type ToolGroup = {
 
 export const TOOL_GROUPS: ToolGroup[] = [
   {
-    title: "変換ツール",
+    title: "単位変換系",
     description: "単位や形式を相互に変換するツール群",
     items: [
       {
@@ -44,7 +44,7 @@ export const TOOL_GROUPS: ToolGroup[] = [
     ],
   },
   {
-    title: "テキスト処理",
+    title: "テキスト処理系",
     items: [
       {
         title: "差分チェッカー",
@@ -57,9 +57,20 @@ export const TOOL_GROUPS: ToolGroup[] = [
         href: "/useful_tools/maskingTool",
       },
       {
-        title: "半角⇔全角 変換",
+        title: "半角⇔全角",
         description: "半角と全角の文字を相互に変換します",
         href: "/useful_tools/hankakuZenkaku",
+      },
+      {
+        title: "改行コード判定・変換",
+        description:
+          "改行コード（LF / CRLF / CR）を判定し、任意の形式に変換します",
+        href: "/useful_tools/newLine",
+      },
+      {
+        title: "URLエンコード・デコード",
+        description: "URLエンコードとデコードを行います",
+        href: "/useful_tools/urlEncodeDecode",
       },
     ],
   },
@@ -70,6 +81,11 @@ export const TOOL_GROUPS: ToolGroup[] = [
         title: "会費計算機",
         description: "会費を割り勘する計算機",
         href: "/useful_tools/drinkPartyOrganizer",
+      },
+      {
+        title: "くじ引き",
+        description: "ランダムなくじ引きを実行します",
+        href: "/useful_tools/lottery",
       },
     ],
   },

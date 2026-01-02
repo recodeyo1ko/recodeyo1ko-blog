@@ -1,12 +1,12 @@
 "use client";
-
 import { useRef, useState } from "react";
+import ToolHeader from "@/app/components/ToolHeader";
 
 type MaskRule = {
   id: number;
-  pattern: string;      // マスク対象文字列（元の値）
-  replacement: string;  // 置き換え文字列（マスク値）
-  auto: boolean;        // 自動検出かどうか
+  pattern: string; // マスク対象文字列（元の値）
+  replacement: string; // 置き換え文字列（マスク値）
+  auto: boolean; // 自動検出かどうか
   enabled: boolean;
 };
 
@@ -35,14 +35,10 @@ function applyMasking(text: string, rules: MaskRule[]): string {
 function detectCandidates(text: string): string[] {
   const candidates = new Set<string>();
 
-  const emailRe =
-    /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
-  const ipv4Re =
-    /\b(?:\d{1,3}\.){3}\d{1,3}\b/g;
-  const hostRe =
-    /\b[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+\b/g; // example.com, host.local など
-  const tokenRe =
-    /\b[a-zA-Z0-9]{12,}\b/g; // 長い英数字（アクセストークン／パスワードっぽい）
+  const emailRe = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
+  const ipv4Re = /\b(?:\d{1,3}\.){3}\d{1,3}\b/g;
+  const hostRe = /\b[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+\b/g; // example.com, host.local など
+  const tokenRe = /\b[a-zA-Z0-9]{12,}\b/g; // 長い英数字（アクセストークン／パスワードっぽい）
 
   const patterns = [emailRe, ipv4Re, hostRe, tokenRe];
 
@@ -58,14 +54,10 @@ function detectCandidates(text: string): string[] {
 
 // ▼ 色付き input プレビュー（元テキストの pattern をハイライト）
 function renderInputPreview(text: string, rules: MaskRule[]) {
-  const activeRules = rules.filter(
-    (r) => r.enabled && r.pattern.trim() !== ""
-  );
+  const activeRules = rules.filter((r) => r.enabled && r.pattern.trim() !== "");
   if (activeRules.length === 0 || text === "") return text;
 
-  const pattern = activeRules
-    .map((r) => escapeRegExp(r.pattern))
-    .join("|");
+  const pattern = activeRules.map((r) => escapeRegExp(r.pattern)).join("|");
 
   const re = new RegExp(pattern, "g");
   const parts: (string | JSX.Element)[] = [];
@@ -108,9 +100,7 @@ function renderMaskedPreview(text: string, rules: MaskRule[]) {
   );
   if (activeRules.length === 0 || text === "") return text;
 
-  const pattern = activeRules
-    .map((r) => escapeRegExp(r.replacement))
-    .join("|");
+  const pattern = activeRules.map((r) => escapeRegExp(r.replacement)).join("|");
 
   const re = new RegExp(pattern, "g");
   const parts: (string | JSX.Element)[] = [];
@@ -240,9 +230,7 @@ export default function MaskingToolPage() {
   };
 
   const handleUpdateRule = (id: number, partial: Partial<MaskRule>) => {
-    const newRules = rules.map((r) =>
-      r.id === id ? { ...r, ...partial } : r
-    );
+    const newRules = rules.map((r) => (r.id === id ? { ...r, ...partial } : r));
     setRules(newRules);
     updateOutput(inputText, newRules);
   };
@@ -261,14 +249,22 @@ export default function MaskingToolPage() {
   };
 
   return (
-    <main className="mx-auto max-w-screen-2xl px-4 py-8">
-      <h1 className="text-2xl font-bold mb-2">
-        マスキングツール (/useful_tools/maskingTool)
-      </h1>
-      <p className="mb-6 text-sm text-gray-600">
-        個別情報などをマスクして、生成AIなどに安全に貼り付けるためのツールです。
-        左のテキストから固有値を選択してマスクパターンを登録するか、「自動検出」を使って候補を追加してください。
-      </p>
+    <div className="mx-auto max-w-screen-2xl px-4 py-8">
+      {/* タイトルと使い方 */}
+      <ToolHeader
+        title="マスキングツール"
+        description="テキストの改行コード（LF / CRLF /CR）を判定し、任意の形式に一括変換できます。"
+        steps={
+          <>
+            <li>
+              個別情報などをマスクして、生成AIなどに安全に貼り付けるためのツールです。
+            </li>
+            <li>
+              左のテキストから固有値を選択してマスクパターンを登録するか、「自動検出」を使って候補を追加してください。
+            </li>
+          </>
+        }
+      />
 
       {/* 入力＆出力 */}
       <section className="grid md:grid-cols-2 gap-6 mb-6">
@@ -322,7 +318,8 @@ export default function MaskingToolPage() {
             onFocus={(e) => e.target.select()}
           />
           <p className="mt-2 text-xs text-gray-500">
-            ※ フォーカスすると全選択されるので、そのままコピーして生成AIなどに貼り付けできます。
+            ※
+            フォーカスすると全選択されるので、そのままコピーして生成AIなどに貼り付けできます。
           </p>
         </div>
       </section>
@@ -442,6 +439,6 @@ export default function MaskingToolPage() {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

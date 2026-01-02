@@ -3,6 +3,7 @@
 
 import { useCallback, useState } from "react";
 import CommandHelpPanel from "./CommandHelpPanel";
+import ToolHeader from "@/app/components/ToolHeader";
 
 type CompressionResult = {
   fileName: string;
@@ -241,22 +242,24 @@ export default function CompressionToolPage() {
   const hashStatus = compareHash(result?.hash ?? null, compareHashInput);
 
   return (
-    <main className="mx-auto max-w-screen-md px-4 py-8">
-      <h1 className="mb-2 text-2xl font-bold text-gray-800">
-        簡易ハッシュ差分チェッカー
-      </h1>
-      <p className="mb-3 text-sm text-gray-600">
-        ファイルをドラッグ＆ドロップすると、圧縮率（gzip
-        想定）・推定展開サイズ・SHA-256 ハッシュをその場で計測します。
-      </p>
-
-      {/* ▼ 1GB 制限の注意書き */}
-      <div className="mb-4 rounded-md border border-orange-300 bg-orange-50 px-3 py-2 text-xs text-orange-800">
-        このツールはブラウザ上で処理するため、
-        <span className="font-semibold">1GB を超えるファイルは対象外</span>
-        です。より大きなファイルや詳細情報が必要な場合は、ページ下部の
-        「コマンド表」を参考に OS のコマンドで確認してください。
-      </div>
+    <div className="mx-auto max-w-screen-2xl px-4 py-8">
+      {/* タイトルと使い方 */}
+      <ToolHeader
+        title="簡易ハッシュ差分チェッカー"
+        description="ファイルをドラッグ＆ドロップすると、圧縮率（gzip想定）・推定展開サイズ・SHA-256 ハッシュをその場で計測します。"
+        steps={
+          <>
+            <li>
+              ファイルを上のエリアにドラッグ＆ドロップ、またはクリックして選択します。
+            </li>
+            <li>1GBを超えるファイルはブラウザ上での計測対象外です。</li>
+            <li>
+              大きなファイルは下部のコマンド表を参考に
+              OSのコマンドで確認してください。
+            </li>
+          </>
+        }
+      />
 
       {/* ドロップゾーン */}
       <section
@@ -421,6 +424,6 @@ export default function CompressionToolPage() {
 
       {/* ▼ コマンド表コンポーネント */}
       <CommandHelpPanel />
-    </main>
+    </div>
   );
 }

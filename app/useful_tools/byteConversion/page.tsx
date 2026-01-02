@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import ToolHeader from "@/app/components/ToolHeader";
 
 const siUnits = ["B", "KB", "MB", "GB", "TB", "PB"] as const;
 const iecUnits = ["B", "KiB", "MiB", "GiB", "TiB", "PiB"] as const;
@@ -107,8 +108,21 @@ export default function ByteConversionPage() {
   const hasResults = resultShrink.length > 0 || result1024.length > 0;
 
   return (
-    <div className="flex flex-col items-center min-h-screen p-4">
-      <h1 className="text-2xl font-bold mb-6">Byte単位変換ツール</h1>
+    <div className="mx-auto min-h-screen max-w-screen-lg bg-gray-50 px-4 py-8">
+      {/* タイトルと使い方 */}
+      <ToolHeader
+        title="任意のバイト数変換ツール"
+        description="テキストの改行コード（LF / CRLF / 混在）を判定し、指定の形式に一括変換します。"
+        steps={
+          <>
+            <li>入力欄に数値を入力します。</li>
+            <li>元の単位を選択します（SI/IEC両対応）。</li>
+            <li>
+              「変換」ボタンを押すと、2通りの見え方で変換結果が表示されます。
+            </li>
+          </>
+        }
+      />
 
       {/* 入力カード */}
       <section className="w-full max-w-2xl border rounded-lg shadow-sm bg-white p-4 md:p-6">
