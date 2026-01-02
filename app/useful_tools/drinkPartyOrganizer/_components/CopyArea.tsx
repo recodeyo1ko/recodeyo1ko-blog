@@ -1,6 +1,6 @@
 "use client";
 
-import CopyButton from "./CopyButton";
+import CopyButton from "@/app/components/CopyButton";
 
 interface Group {
   groupName: string;
@@ -33,18 +33,23 @@ const CopyArea = ({
   peopleMatch,
 }: CopyAreaProps) => {
   // ヘッダー部分の生成
-  const headerText =
-    calculationMode === "courseFee"
-      ? `１人分のコース料金：${Number(
-          courseFee
-        ).toLocaleString()}円\n参加人数：${Number(
-          totalPeople
-        ).toLocaleString()}人\n請求金額：${(
-          Number(courseFee) * Number(totalPeople)
-        ).toLocaleString()}円`
-      : `請求金額：${Number(totalBill).toLocaleString()}円\n参加人数：${Number(
-          totalPeople
-        ).toLocaleString()}人`;
+  const headerText = () => {
+    if (calculationMode === "courseFee") {
+      return `１人分のコース料金：${Number(
+        courseFee
+      ).toLocaleString()}円\n参加人数：${Number(
+        totalPeople
+      ).toLocaleString()}人\n請求金額：${(
+        Number(courseFee) * Number(totalPeople)
+      ).toLocaleString()}円`;
+    } else {
+      return `請求金額：${Number(
+        totalBill
+      ).toLocaleString()}円\n参加人数：${Number(
+        totalPeople
+      ).toLocaleString()}人`;
+    }
+  };
 
   // 差異がある場合のメッセージを生成
   const discrepancyText: string[] = [];
@@ -90,23 +95,32 @@ const CopyArea = ({
     )
     .join("\n");
 
-  // フッター部分の生成 (開業を明示)
+  // フッター部分の生成
   const footerText = `全グループ支払額合計：${totalGroupAmount.toLocaleString()}円\n全グループ人数合計：${totalGroupCount.toLocaleString()}人`;
 
-  // コピー内容の組み立て
-  const copyText = `${headerText}\n--------------------\n${groupDetails}\n${footerText}${
-    discrepancyText.length > 0 ? `\n${discrepancyText.join("\n")}` : ""
+  // 全体のコピー用テキスト
+  const fullText = `${headerText()}\n--------------------\n${groupDetails}\n${footerText}${
+    discrepancyText.length > 0 ? "\n" + discrepancyText.join("\n") : ""
   }`;
 
   return (
-    <div className="w-full max-w-2xl">
+    <section className="bg-white/[0.02] rounded-md p-6 border border-white/10">
+      <h2 className="text-2xl font-semibold text-zinc-100 mb-4">
+        コピーエリア
+      </h2>
+      <div className="flex items-center justify-between mb-4">
+        <p className="text-sm text-zinc-500">
+          計算結果をコピーして共有できます。
+        </p>
+        <CopyButton text={fullText} />
+      </div>
       <textarea
+        value={fullText}
         readOnly
-        value={copyText}
-        className="border rounded-md p-2 w-full h-48 mb-2"
+        className="w-full h-64 bg-white/[0.02] border border-white/10 rounded-md p-3 text-sm font-mono text-zinc-100"
+        onFocus={(e) => e.target.select()}
       />
-      <CopyButton text={copyText} />
-    </div>
+    </section>
   );
 };
 
