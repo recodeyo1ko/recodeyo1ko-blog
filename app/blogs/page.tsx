@@ -14,25 +14,28 @@ export default async function BlogPage() {
         記事一覧
       </h2>
 
-      {/* 表のヘッダー部分 */}
-      <div className="grid grid-cols-12 border-b pb-3 font-semibold text-gray-700 text-lg">
-        <div className="col-span-5">タイトル</div>
-        <div className="col-span-4 text-right">技術タグ</div>
-        <div className="col-span-3 text-right">ジャンル</div>
-      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse">
+          <thead>
+            <tr className="border-b font-semibold text-gray-700 text-lg">
+              <th className="text-left p-2 w-5/12">タイトル</th>
+              <th className="text-right p-2 w-3/12">ジャンル</th>
+              <th className="text-right p-2 w-4/12">技術タグ</th>
+            </tr>
+          </thead>
 
-      {/* 各記事 */}
-      <div className="divide-y">
-        {contents.map((blog) => (
-          <Blog
-            key={blog.id}
-            id={blog.id}
-            title={blog.title}
-            category={blog.category ?? {}}
-            tags={blog.tags ?? []}
-            eyecatch={undefined}
-          />
-        ))}
+          <tbody>
+            {contents.map((blog) => (
+              <Blog
+                key={blog.id}
+                id={blog.id}
+                title={blog.title}
+                category={blog.category ?? null}
+                tags={blog.tags ?? []}
+              />
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

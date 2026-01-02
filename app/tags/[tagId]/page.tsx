@@ -1,42 +1,48 @@
 import Blog from "../../components/Blog";
 import { getList } from "../../libs/microcms";
 
-const fetchBlogsByTag = async (tagId: string) => {
+const fetchBlogsByTag = async (tagName: string) => {
   const { contents } = await getList();
 
-  const filteredBlogs = contents.filter((blog: any) =>
-    blog.tags?.some((tag: any) => tag.name === tagId)
+  return contents.filter((blog: any) =>
+    blog.tags?.some((tag: any) => tag.name === tagName)
   );
-
-  return filteredBlogs;
 };
 
 const TagPage = async ({ params }: { params: { tagId: string } }) => {
-  const { tagId } = params;
-  const blogs = await fetchBlogsByTag(tagId); // blogs は常に配列になる
+  const decodedTag = decodeURIComponent(params.tagId);
+  const blogs = await fetchBlogsByTag(decodedTag);
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">タグ: {tagId}</h1>
+    <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
+      <h1 className="text-3xl font-bold mb-6">タグ: {decodedTag}</h1>
 
       {blogs.length === 0 ? (
         <p className="text-gray-600">該当する記事がありません</p>
       ) : (
-        <table className="w-full border-collapse border border-gray-300">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="border border-gray-300 px-4 py-2">タイトル</th>
-              <th className="border border-gray-300 px-4 py-2">カテゴリ</th>
-              <th className="border border-gray-300 px-4 py-2">タグ</th>
-              <th className="border border-gray-300 px-4 py-2">アイキャッチ</th>
-            </tr>
-          </thead>
-          <tbody>
-            {blogs.map((blog: any) => (
-              <Blog key={blog.id} {...blog} />
-            ))}
-          </tbody>
-        </table>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="border-b font-semibold text-gray-700 text-lg">
+                <th className="text-left p-2 w-5/12">タイトル</th>
+                <th className="text-right p-2 w-3/12">ジャンル</th>
+                <th className="text-right p-2 w-4/12">技術タグ</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {blogs.map((blog: any) => (
+                <Blog
+                  key={blog.id}
+                  id={blog.id}
+                  title={blog.title}
+                  category={blog.category ?? null}
+                  tags={blog.tags ?? []}
+                />
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );

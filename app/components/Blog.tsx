@@ -1,45 +1,44 @@
 import Link from "next/link";
-import TagButton from "./TagButton";
-import CategoryButton from "./CategoryButton";
+import LinkButton from "../components/LinkButton";
 
-const Blog = async (props: {
-  id: any;
-  title: any;
-  eyecatch: any;
-  category: any;
-  tags: any;
-}) => {
-  const { id, title, eyecatch, category, tags } = props;
+type BlogProps = {
+  id: string;
+  title: string;
+  category?: { name?: string } | null;
+  tags?: { id: string; name: string }[] | null;
+};
+
+const Blog = async ({ id, title, category, tags }: BlogProps) => {
   return (
-    <tr className="border-b">
-      <td className="p-2">
-        <Link href={`/blogs/${id}`} className="hover:underline">
+    <tr className="border-b hover:bg-gray-50 transition">
+      {/* タイトル */}
+      <td className="p-2 text-left">
+        <Link href={`/blogs/${id}`} className="font-medium hover:underline">
           {title}
         </Link>
       </td>
-      <td className="p-2">
-        <CategoryButton name={category.name} />
-      </td>
-      <td className="p-2">
-        {tags && tags.length > 0 ? (
-          tags.map((tag: any) => (
-            <Link key={tag.id} href={`/tags/${tag.name}`}>
-              <TagButton id={tag.id} name={tag.name} />
-            </Link>
-          ))
+
+      {/* ジャンル（カテゴリ） */}
+      <td className="p-2 text-right">
+        {category?.name ? (
+          <LinkButton href={`/categories/${category.name}`} variant="category">
+            {category.name}
+          </LinkButton>
         ) : (
           <span>-</span>
         )}
       </td>
-      <td className="p-2">
-        {eyecatch ? (
-          <img
-            src={eyecatch.url}
-            alt="Eyecatch"
-            width={40}
-            height={40}
-            className="object-cover rounded"
-          />
+
+      {/* 技術タグ */}
+      <td className="p-2 text-right">
+        {tags && tags.length > 0 ? (
+          <div className="flex flex-wrap justify-end gap-1">
+            {tags.map((tag) => (
+              <LinkButton key={tag.id} href={`/tags/${tag.name}`} variant="tag">
+                {tag.name}
+              </LinkButton>
+            ))}
+          </div>
         ) : (
           <span>-</span>
         )}

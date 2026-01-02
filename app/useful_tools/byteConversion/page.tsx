@@ -107,55 +107,64 @@ export default function ByteConversionPage() {
   const hasResults = resultShrink.length > 0 || result1024.length > 0;
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4">
+    <div className="flex flex-col items-center min-h-screen p-4">
       <h1 className="text-2xl font-bold mb-6">Byte単位変換ツール</h1>
 
-      {/* 入力フォーム */}
-      <div className="flex flex-col space-y-4 mb-6">
-        <div className="flex items-center space-x-2">
-          <label htmlFor="inputValue" className="font-medium">
-            数値:
-          </label>
-          <input
-            type="number"
-            id="inputValue"
-            value={inputValue}
-            onChange={(e) => setInputValue(Number(e.target.value))}
-            className="border rounded-md px-2 py-1"
-          />
+      {/* 入力カード */}
+      <section className="w-full max-w-2xl border rounded-lg shadow-sm bg-white p-4 md:p-6">
+        <h2 className="text-lg font-semibold mb-4">入力</h2>
+
+        {/* 入力フォーム */}
+        <div className="flex flex-col space-y-4">
+          <div className="flex items-center space-x-2">
+            <label htmlFor="inputValue" className="font-medium w-20">
+              数値:
+            </label>
+            <input
+              type="number"
+              id="inputValue"
+              value={inputValue}
+              onChange={(e) => setInputValue(Number(e.target.value))}
+              className="border rounded-md px-2 py-1 flex-1"
+            />
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <label htmlFor="fromUnit" className="font-medium w-20">
+              単位:
+            </label>
+            <select
+              id="fromUnit"
+              value={fromUnit}
+              onChange={(e) => setFromUnit(e.target.value as Unit)}
+              className="border rounded-md px-2 py-1 flex-1"
+            >
+              {[...siUnits, ...iecUnits].map((unit) => (
+                <option key={unit} value={unit}>
+                  {unit}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* 変換ボタン：右下 */}
+          <div className="pt-2 flex justify-end">
+            <button
+              onClick={handleConvert}
+              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+            >
+              変換
+            </button>
+          </div>
         </div>
+      </section>
 
-        <div className="flex items-center space-x-2">
-          <label htmlFor="fromUnit" className="font-medium">
-            単位:
-          </label>
-          <select
-            id="fromUnit"
-            value={fromUnit}
-            onChange={(e) => setFromUnit(e.target.value as Unit)}
-            className="border rounded-md px-2 py-1"
-          >
-            {[...siUnits, ...iecUnits].map((unit) => (
-              <option key={unit} value={unit}>
-                {unit}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      <button
-        onClick={handleConvert}
-        className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-      >
-        変換
-      </button>
-
+      {/* 結果（2つのカード） */}
       {hasResults && (
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-5xl">
+        <div className="mt-8 w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* A: 少なくなる表示 */}
-          <div className="bg-white shadow rounded-md p-4">
-            <h2 className="text-lg font-semibold mb-2 border-b">
+          <section className="border rounded-lg shadow-sm bg-white p-4 md:p-6">
+            <h2 className="text-lg font-semibold mb-2 border-b pb-2">
               少なく見える（メーカー表記 → OS表示）
             </h2>
 
@@ -174,15 +183,15 @@ export default function ByteConversionPage() {
               {resultShrink.map(({ unit, value }) => (
                 <li key={unit} className="flex justify-between">
                   <span>{unit}</span>
-                  <span>{formatNumber(value)}</span>
+                  <span className="font-mono">{formatNumber(value)}</span>
                 </li>
               ))}
             </ul>
-          </div>
+          </section>
 
-          {/* B: 1024をかけた表示 */}
-          <div className="bg-white shadow rounded-md p-4">
-            <h2 className="text-lg font-semibold mb-2 border-b">
+          {/* B: 1024基準 */}
+          <section className="border rounded-lg shadow-sm bg-white p-4 md:p-6">
+            <h2 className="text-lg font-semibold mb-2 border-b pb-2">
               1024基準として解釈（2進 → 10進で表示）
             </h2>
 
@@ -202,11 +211,11 @@ export default function ByteConversionPage() {
               {result1024.map(({ unit, value }) => (
                 <li key={unit} className="flex justify-between">
                   <span>{unit}</span>
-                  <span>{formatNumber(value)}</span>
+                  <span className="font-mono">{formatNumber(value)}</span>
                 </li>
               ))}
             </ul>
-          </div>
+          </section>
         </div>
       )}
     </div>

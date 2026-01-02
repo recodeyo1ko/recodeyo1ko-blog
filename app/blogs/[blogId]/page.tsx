@@ -1,22 +1,17 @@
 import { notFound } from "next/navigation";
-import parse from "html-react-parser";
 import { getDetail, getList } from "../../libs/microcms";
 import markdownHtml from "zenn-markdown-html";
 import { load } from "cheerio";
 import hljs from "highlight.js";
 import "highlight.js/styles/night-owl.css";
-import CategoryButton from "../../components/CategoryButton";
+import LinkButton from "../../components/LinkButton";
 
 export async function generateStaticParams() {
   const { contents } = await getList();
 
-  const paths = contents.map((blog: { id: any }) => {
-    return {
-      blogId: blog.id,
-    };
-  });
-
-  return [...paths];
+  return contents.map((blog: { id: string }) => ({
+    blogId: blog.id,
+  }));
 }
 
 export default async function StaticDetailPage({
@@ -26,24 +21,25 @@ export default async function StaticDetailPage({
 }) {
   const blog = await getDetail(blogId);
 
-  // ページの生成された時間を取得
-  const time = new Date().toLocaleString();
+  if (!blog) notFound();
 
-  if (!blog) {
-    notFound();
-  }
+  // ✅ 投稿日時はCMSの日時を使う（なければ表示しない/代替）
+  const published =
+    blog.publishedAt ?? blog.createdAt ?? blog.updatedAt ?? null;
+
+  const time = published
+    ? new Date(published).toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" })
+    : null;
 
   let html = markdownHtml(blog.content);
 
   const $ = load(html);
-
   $("pre code").each((_, elm) => {
     const result = hljs.highlightAuto($(elm).text());
     $(elm).html(result.value);
     $(elm).addClass("hljs");
   });
   html = $.html();
-  console.log(html);
 
   return (
     <div>
@@ -51,28 +47,52 @@ export default async function StaticDetailPage({
         <h1 className="my-4 text-center text-2xl font-bold text-gray-800 sm:text-3xl md:mb-6">
           {blog.title}
         </h1>
-        <div className="flex justify-end">
-          <div>投稿日時：{time}</div>
+
+        {/* 投稿日時 */}
+        <div className="flex justify-end text-sm text-gray-500">
+          {time ? <div>投稿日時：{time}</div> : <div>投稿日時：-</div>}
         </div>
-        <div className="flex justify-end">
-          <div>カテゴリー</div>
+
+        {/* カテゴリー */}
+        <div className="mt-2 flex justify-end items-center gap-2">
+          <div className="text-sm text-gray-500">ジャンル：</div>
           {blog.category?.name ? (
-            <CategoryButton name={blog.category.name} />
+            <LinkButton
+              href={`/categories/${blog.category.name}`}
+              variant="category"
+            >
+              {blog.category.name}
+            </LinkButton>
           ) : (
-            <div className="ml-2 text-gray-500">未分類</div>
+            <div className="text-sm text-gray-500">未分類</div>
           )}
         </div>
 
-        <div className="flex justify-end">
-          <div>タグ</div>
-          {/* {blog.tags.map((tag: any) => {
-              return <TagButton id={tag.id} name={tag.name} />;
-            })} */}
+        {/* タグ */}
+        <div className="mt-2 flex justify-end items-start gap-2">
+          <div className="text-sm text-gray-500 mt-1">技術タグ：</div>
+          {blog.tags && blog.tags.length > 0 ? (
+            <div className="flex flex-wrap justify-end gap-1">
+              {blog.tags.map((tag: { id: string; name: string }) => (
+                <LinkButton
+                  key={tag.id}
+                  href={`/tags/${tag.name}`}
+                  variant="tag"
+                >
+                  {tag.name}
+                </LinkButton>
+              ))}
+            </div>
+          ) : (
+            <div className="text-sm text-gray-500">-</div>
+          )}
         </div>
+
+        {/* 本文 */}
         <div
-          className="markdown"
+          className="markdown mt-6"
           dangerouslySetInnerHTML={{ __html: html }}
-        ></div>
+        />
       </div>
     </div>
   );

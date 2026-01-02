@@ -1,5 +1,5 @@
-import SidebarCategory from "./SidebarCategory";
-import SidebarTags from "./SidebarTags";
+import SidebarItemList from "./SidebarItemList";
+import { getCategoryList, getTagList } from "../libs/microcms";
 
 export const Sidebar = () => {
   return (
@@ -23,14 +23,20 @@ export const Sidebar = () => {
           </p>
         </div>
       </div>
-      <div className="my-10">
-        <div className="py-2">カテゴリー</div>
-        <SidebarCategory />
-      </div>
-      <div className="my-10">
-        <div className="py-2">タグ</div>
-        <SidebarTags />
-      </div>
+
+      <SidebarItemList
+        title="カテゴリー"
+        fetcher={getCategoryList}
+        hrefPrefix="categories"
+        variant="category"
+      />
+
+      <SidebarItemList
+        title="タグ"
+        fetcher={getTagList}
+        hrefPrefix="tags"
+        variant="tag"
+      />
     </div>
   );
 };

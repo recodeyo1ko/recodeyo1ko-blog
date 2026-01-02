@@ -29,67 +29,9 @@ export const Header = () => {
           <Link href="/blogs">
             <div className="mr-5 hover:text-white">記事一覧</div>
           </Link>
-          <div className="relative inline-block">
-            <button
-              className="mr-5 hover:text-white flex items-center gap-1"
-              onClick={toggleDropdown}
-            >
-              業務ツール
-              <span>{isOpen ? "▲" : "▼"}</span>
-            </button>
-
-            {isOpen && (
-              <div className="absolute bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700 mt-2 z-10">
-                <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
-                  <li>
-                    <Link
-                      href="/useful_tools/workTimeConversion"
-                      className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                    >
-                      人時・日・月変換
-                    </Link>
-                    <Link
-                      href="/useful_tools/drinkPartyOrganizer"
-                      className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                    >
-                      飲み会幹事
-                    </Link>
-                    <Link
-                      href="/useful_tools/decimalConversion"
-                      className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                    >
-                      60進数⇔10進数変換
-                    </Link>
-
-                    <Link
-                      href="/useful_tools/byteConversion"
-                      className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                    >
-                      Byte単位変換
-                    </Link>
-                    <Link
-                      href="/useful_tools/compressionTool"
-                      className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                    >
-                      クイック圧縮率チェッカー
-                    </Link>
-                    <Link
-                      href="/useful_tools/diffTool"
-                      className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                    >
-                      差分チェッカー
-                    </Link>
-                    <Link
-                      href="/useful_tools/maskingTool"
-                      className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                    >
-                      文章マスキング
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-            )}
-          </div>
+          <Link href="/useful_tools">
+            <div className="mr-5 hover:text-white">業務効率化ツール一覧</div>
+          </Link>
         </nav>
       </div>
     </header>

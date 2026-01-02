@@ -1,36 +1,30 @@
 "use client";
-import React, { useState } from "react";
+import { useState } from "react";
 
 interface InputFormProps {
   onConvert: (value: number, unit: string) => void;
 }
 
-const InputForm: React.FC<InputFormProps> = ({ onConvert }) => {
-  const [value, setValue] = useState<number | "">("");
+export default function InputForm({ onConvert }: InputFormProps) {
+  const [value, setValue] = useState(0);
   const [unit, setUnit] = useState("hours");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (value !== "") {
-      onConvert(Number(value), unit);
-    }
+    onConvert(value, unit);
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="flex flex-col items-center space-y-4"
-    >
+    <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
+      {/* 入力行 */}
       <div className="flex items-center space-x-2">
         <input
           type="number"
           value={value}
-          onChange={(e) =>
-            setValue(e.target.value !== "" ? Number(e.target.value) : "")
-          }
-          placeholder="Enter value"
-          className="border rounded-md px-4 py-2"
+          onChange={(e) => setValue(Number(e.target.value))}
+          className="flex-1 border rounded-md px-4 py-2"
         />
+
         <select
           value={unit}
           onChange={(e) => setUnit(e.target.value)}
@@ -41,14 +35,16 @@ const InputForm: React.FC<InputFormProps> = ({ onConvert }) => {
           <option value="months">人月</option>
         </select>
       </div>
-      <button
-        type="submit"
-        className="bg-blue-500 text-white px-6 py-2 rounded-md"
-      >
-        変換
-      </button>
+
+      {/* 変換ボタン（右寄せにしやすい） */}
+      <div className="flex justify-end">
+        <button
+          type="submit"
+          className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600"
+        >
+          変換
+        </button>
+      </div>
     </form>
   );
-};
-
-export default InputForm;
+}

@@ -91,6 +91,7 @@ const DecimalConversionPage = () => {
           <h2 className="text-lg font-semibold mb-4">稼働時間計算</h2>
 
           <div className="flex flex-col space-y-4 mb-4">
+            {/* 入力群 */}
             <div className="flex items-center space-x-2">
               <label htmlFor="startTime" className="font-medium w-32">
                 開始時間 (HH:MM):
@@ -103,6 +104,7 @@ const DecimalConversionPage = () => {
                 className="border rounded-md px-2 py-1 flex-1"
               />
             </div>
+
             <div className="flex items-center space-x-2">
               <label htmlFor="endTime" className="font-medium w-32">
                 終了時間 (HH:MM):
@@ -115,6 +117,7 @@ const DecimalConversionPage = () => {
                 className="border rounded-md px-2 py-1 flex-1"
               />
             </div>
+
             <div className="flex items-center space-x-2">
               <label htmlFor="breakTime" className="font-medium w-32">
                 休憩時間 (HH:MM):
@@ -127,28 +130,15 @@ const DecimalConversionPage = () => {
                 className="border rounded-md px-2 py-1 flex-1"
               />
             </div>
+
+            {/* ボタンを右下に */}
             <button
               onClick={handleConvertWorkTime}
-              className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 self-start"
+              className="mt-2 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 self-end"
             >
               稼働時間を計算
             </button>
           </div>
-
-          {workMinutes !== null && (
-            <div className="mt-2 space-y-2">
-              <p>稼働時間 (60進数): {formatMinutesToHHMM(workMinutes)}</p>
-              <p>稼働時間 (10進数): {formatMinutesToDecimal(workMinutes)}</p>
-              <p className="text-sm text-gray-600">
-                計算式: 稼働時間 = (終了時間 - 開始時間) - 休憩時間
-                <br />
-                例: {formatMinutesToHHMM(parseTimeToMinutes(endTime))} -{" "}
-                {formatMinutesToHHMM(parseTimeToMinutes(startTime))} -{" "}
-                {formatMinutesToHHMM(parseTimeToMinutes(breakTime))} ={" "}
-                {formatMinutesToHHMM(workMinutes)}
-              </p>
-            </div>
-          )}
         </section>
 
         {/*  ボックス2：任意の 60進 ⇔ 10進 変換 */}
@@ -197,33 +187,40 @@ const DecimalConversionPage = () => {
             )}
           </div>
 
-          <div className="flex items-center w-full">
-            <div className="flex-1">
-              {conversionType === "toDecimal" ? (
-                <input
-                  type="time"
-                  step="60"
-                  value={conversionInput}
-                  onChange={(e) => setConversionInput(e.target.value)}
-                  className="w-full p-2 border rounded mb-2"
-                />
-              ) : (
-                <input
-                  type="number"
-                  step="0.01"
-                  value={conversionInput}
-                  onChange={(e) => setConversionInput(e.target.value)}
-                  placeholder="例: 13.75"
-                  className="w-full p-2 border rounded mb-2"
-                />
-              )}
+          <div className="w-full">
+            {/* 入力欄 */}
+            <div className="flex items-center w-full">
+              <div className="flex-1">
+                {conversionType === "toDecimal" ? (
+                  <input
+                    type="time"
+                    step="60"
+                    value={conversionInput}
+                    onChange={(e) => setConversionInput(e.target.value)}
+                    className="w-full p-2 border rounded"
+                  />
+                ) : (
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={conversionInput}
+                    onChange={(e) => setConversionInput(e.target.value)}
+                    placeholder="例: 13.75"
+                    className="w-full p-2 border rounded"
+                  />
+                )}
+              </div>
             </div>
-            <button
-              onClick={handleSimpleConversion}
-              className="ml-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-            >
-              変換
-            </button>
+
+            {/* 変換ボタン（下・右寄せ） */}
+            <div className="mt-3 flex justify-end">
+              <button
+                onClick={handleSimpleConversion}
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              >
+                変換
+              </button>
+            </div>
           </div>
 
           {conversionResult !== null && (

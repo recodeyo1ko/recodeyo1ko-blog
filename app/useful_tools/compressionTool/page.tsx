@@ -118,7 +118,9 @@ function renderHashDiff(
 
   return (
     <div className="mt-3 rounded-md border border-gray-200 bg-gray-50 px-2 py-2 font-mono text-[11px] whitespace-pre-wrap break-all">
-      <div className="mb-1 text-[10px] text-gray-500">計算結果（正規化済み）</div>
+      <div className="mb-1 text-[10px] text-gray-500">
+        計算結果（正規化済み）
+      </div>
       <div>{calcSpans}</div>
 
       <div className="mt-2 mb-1 text-[10px] text-gray-500">
@@ -127,7 +129,8 @@ function renderHashDiff(
       <div>{inputSpans}</div>
 
       <div className="mt-2 text-[10px] text-gray-500">
-        ※ 空白除去・小文字化後の文字列を比較し、不一致箇所だけ赤くハイライトしています。
+        ※
+        空白除去・小文字化後の文字列を比較し、不一致箇所だけ赤くハイライトしています。
         一致しない位置は「·」で穴あき表示されます。
       </div>
     </div>
@@ -240,11 +243,11 @@ export default function CompressionToolPage() {
   return (
     <main className="mx-auto max-w-screen-md px-4 py-8">
       <h1 className="mb-2 text-2xl font-bold text-gray-800">
-        クイック圧縮率チェッカー
+        簡易ハッシュ差分チェッカー
       </h1>
       <p className="mb-3 text-sm text-gray-600">
-        ファイルをドラッグ＆ドロップすると、圧縮率（gzip 想定）・推定展開サイズ・SHA-256
-        ハッシュをその場で計測します。
+        ファイルをドラッグ＆ドロップすると、圧縮率（gzip
+        想定）・推定展開サイズ・SHA-256 ハッシュをその場で計測します。
       </p>
 
       {/* ▼ 1GB 制限の注意書き */}
@@ -303,9 +306,7 @@ export default function CompressionToolPage() {
           <div className="space-y-3 rounded-xl border border-gray-200 bg-white p-4 text-sm">
             <div className="flex items-center justify-between">
               <span className="text-gray-500">ファイル名</span>
-              <span className="font-mono text-gray-800">
-                {result.fileName}
-              </span>
+              <span className="font-mono text-gray-800">{result.fileName}</span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-gray-500">元サイズ</span>
@@ -387,9 +388,7 @@ export default function CompressionToolPage() {
           </div>
 
           <div>
-            <div className="mb-1 text-xs text-gray-500">
-              計算された SHA-256
-            </div>
+            <div className="mb-1 text-xs text-gray-500">計算された SHA-256</div>
             <div className="break-all rounded-md bg-gray-50 px-2 py-1 font-mono text-[11px] text-gray-800">
               {result?.hash ?? "- ファイルを選択するとここに表示されます -"}
             </div>
@@ -414,9 +413,9 @@ export default function CompressionToolPage() {
             )}
           </div>
 
-          {result?.hash && compareHashInput.trim() && (
-            renderHashDiff(result.hash, compareHashInput)
-          )}
+          {result?.hash &&
+            compareHashInput.trim() &&
+            renderHashDiff(result.hash, compareHashInput)}
         </div>
       </section>
 

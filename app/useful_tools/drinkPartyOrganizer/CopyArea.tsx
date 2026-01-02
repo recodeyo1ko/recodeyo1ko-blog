@@ -1,6 +1,6 @@
 "use client";
 
-import CopyButton from "./CopyButton";
+import CopyButton from "../../components/CopyButton";
 
 interface Group {
   groupName: string;
@@ -100,12 +100,17 @@ const CopyArea = ({
 
   return (
     <div className="w-full max-w-2xl">
-      <textarea
-        readOnly
-        value={copyText}
-        className="border rounded-md p-2 w-full h-48 mb-2"
-      />
-      <CopyButton text={copyText} />
+      {/* テキストエリア＋コピー（相対配置） */}
+      <div className="relative">
+        <textarea
+          readOnly
+          value={copyText}
+          className="border rounded-md p-3 pr-20 w-full h-96 resize-none"
+        />
+        <div className="absolute top-2 right-2">
+          <CopyButton text={copyText} />
+        </div>
+      </div>
     </div>
   );
 };

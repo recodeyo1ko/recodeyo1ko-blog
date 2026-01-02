@@ -53,49 +53,10 @@ export const Footer = () => {
             </h2>
             <nav className="list-none mb-10">
               <li>
-                <Link
-                  href="/useful_tools/workTimeConversion"
-                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                >
-                  人時・日・月変換
-                </Link>
-                <Link
-                  href="/useful_tools/decimalConversion"
-                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                >
-                  60進数⇔10進数変換
-                </Link>
-
-                <Link
-                  href="/useful_tools/byteConversion"
-                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                >
-                  Byte単位変換
-                </Link>
-                <Link
-                  href="/useful_tools/compressionTool"
-                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                >
-                  クイック圧縮率チェッカー
-                </Link>
-                <Link
-                  href="/useful_tools/diffTool"
-                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                >
-                  差分チェッカー
-                </Link>
-                <Link
-                  href="/useful_tools/maskingTool"
-                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                >
-                  文章マスキング
-                </Link>
-                <Link
-                  href="/useful_tools/hankakuZenkaku"
-                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                >
-                  半角・全角変換ツール
-                </Link>
+                <a className="text-gray-400 hover:text-white">整備中</a>
+              </li>
+              <li>
+                <a className="text-gray-400 hover:text-white">整備中</a>
               </li>
             </nav>
           </div>
@@ -105,12 +66,10 @@ export const Footer = () => {
             </h2>
             <nav className="list-none mb-10">
               <li>
-                <Link
-                  href="/useful_tools/drinkPartyOrganizer"
-                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                >
-                  飲み会幹事
-                </Link>
+                <a className="text-gray-400 hover:text-white">整備中</a>
+              </li>
+              <li>
+                <a className="text-gray-400 hover:text-white">整備中</a>
               </li>
             </nav>
           </div>
