@@ -22,13 +22,13 @@ export default function InputForm({ onConvert }: InputFormProps) {
           type="number"
           value={value}
           onChange={(e) => setValue(Number(e.target.value))}
-          className="flex-1 border rounded-md px-4 py-2"
+          className="flex-1 bg-white/[0.02] border border-white/10 rounded-md px-2 py-1 text-zinc-100 focus:outline-none focus:ring-2 focus:ring-zinc-500"
         />
 
         <select
           value={unit}
           onChange={(e) => setUnit(e.target.value)}
-          className="border rounded-md px-4 py-2"
+          className="bg-white/[0.02] border border-white/10 rounded-md px-2 py-1 text-zinc-100 focus:outline-none focus:ring-2 focus:ring-zinc-500"
         >
           <option value="hours">人時</option>
           <option value="days">人日</option>
@@ -40,7 +40,7 @@ export default function InputForm({ onConvert }: InputFormProps) {
       <div className="flex justify-end">
         <button
           type="submit"
-          className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600"
+          className="bg-zinc-700 text-zinc-100 px-6 py-2 rounded-md hover:bg-zinc-600 focus:outline-none focus:ring-2 focus:ring-zinc-500"
         >
           変換
         </button>

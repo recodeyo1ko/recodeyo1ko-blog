@@ -1,42 +1,45 @@
-import React from "react";
-import LinkButton from "../components/LinkButton";
+import Link from "next/link";
 
 type Item = { id: string; name: string };
 
 type Props = {
-  title: string;
   fetcher: () => Promise<{ contents: Item[] }>;
   hrefPrefix: string; // "tags" / "categories"
   variant: "tag" | "category";
 };
 
+const iconByVariant: Record<Props["variant"], string> = {
+  category: "📁",
+  tag: "#",
+};
+
 export default async function SidebarItemList({
-  title,
   fetcher,
   hrefPrefix,
   variant,
 }: Props) {
   const { contents } = await fetcher();
 
-  return (
-    <div className="my-10">
-      <div className="py-2">{title}</div>
+  if (!contents || contents.length === 0) {
+    return <p className="px-2 py-1 text-xs text-zinc-500">No contents</p>;
+  }
 
-      {!contents || contents.length === 0 ? (
-        <p className="text-sm text-gray-400">No contents</p>
-      ) : (
-        <div className="flex flex-wrap">
-          {contents.map((item) => (
-            <LinkButton
-              key={item.id}
-              href={`/${hrefPrefix}/${item.name}`}
-              variant={variant}
-            >
-              {item.name}
-            </LinkButton>
-          ))}
-        </div>
-      )}
+  return (
+    <div className="space-y-1">
+      {contents.map((item) => (
+        <Link
+          key={item.id}
+          href={`/${hrefPrefix}/${encodeURIComponent(item.name)}`}
+          className="group flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-zinc-200 hover:bg-white/5 active:bg-white/10"
+          title={item.name}
+        >
+          <span className="w-5 shrink-0 text-zinc-400 group-hover:text-zinc-200">
+            {iconByVariant[variant]}
+          </span>
+
+          <span className="min-w-0 flex-1 truncate">{item.name}</span>
+        </Link>
+      ))}
     </div>
   );
 }

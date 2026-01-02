@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 // 既に CopyButton がある前提（パスはあなたの構成に合わせて調整）
 import CopyButton from "@/app/components/CopyButton";
-import ToolHeader from "@/app/components/ToolHeader";
+import ToolHeader from "@/app/components/useful_tool/ToolHeader";
 
 type DrawMode = "shuffle" | "winners";
 
@@ -181,198 +181,211 @@ export default function LotteryPage() {
   }, [winners, shuffled]);
 
   return (
-    <div className="mx-auto max-w-screen-2xl px-4 py-8">
-      {/* タイトルと使い方 */}
-      <ToolHeader
-        title="ランダム抽選（くじ）"
-        description="名前リストから、シャッフル／当選者抽選を行います。"
-        steps={
-          <>
-            <li>1行1名で候補を入力</li>
-            <li>「シャッフル」で順番決定、「抽選」で当選者を選択する</li>
-            <li>重複なし/あり、当選人数を設定可能</li>
-          </>
-        }
-      />
-
-      {/* 入力カード */}
-      <section className="mb-6 rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-        <div className="mb-2 flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-gray-800">候補リスト</h2>
-          <div className="text-xs text-gray-500">{candidates.length} 件</div>
-        </div>
-
-        <textarea
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder={"例）\n佐藤\n鈴木\n高橋\n…"}
-          className="h-40 w-full resize-y rounded-md border border-gray-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+    <div className="min-h-screen bg-zinc-900">
+      <div className="mx-auto max-w-5xl px-6 py-12">
+        <ToolHeader
+          title="抽選・シャッフルツール"
+          description="候補リストからランダムに当選者を抽選したり、順番をシャッフルしたりするツールです。"
+          stepsVariant="ordered"
+          className="mb-12"
+          steps={
+            <>
+              <li>候補リストに名前や項目を1行ずつ入力します。</li>
+              <li>当選人数を指定し、重複の有無を設定します。</li>
+              <li>
+                「シャッフル」ボタンで順番をランダム化、
+                「抽選」ボタンで当選者を決定します。
+              </li>
+              <li>
+                結果は下部に表示され、コピーも可能です。履歴も保存できます。
+              </li>
+            </>
+          }
         />
 
-        <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
-          <div className="rounded-md border border-gray-200 bg-gray-50 p-3">
-            <div className="text-xs font-semibold text-gray-700">当選人数</div>
-            <input
-              type="number"
-              min={1}
-              max={allowDuplicates ? 999 : Math.max(1, maxWithoutDup)}
-              value={winnerCount}
-              onChange={(e) => setWinnerCount(Number(e.target.value))}
-              className="mt-1 w-full rounded-md border border-gray-300 px-2 py-1 text-sm"
-            />
-            {!allowDuplicates && (
-              <div className="mt-1 text-[11px] text-gray-500">
-                重複なしの場合、最大 {maxWithoutDup} 人まで
+        {/* 入力セクション */}
+        <section className="mb-12 bg-white/[0.02] rounded-md p-6 border border-white/10">
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-2xl font-semibold text-zinc-100">候補リスト</h2>
+            <div className="text-sm text-zinc-500">{candidates.length} 件</div>
+          </div>
+
+          <textarea
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder={"例）\n佐藤\n鈴木\n高橋\n…"}
+            className="w-full h-40 resize-y rounded-md bg-white/[0.02] border border-white/10 px-3 py-2 text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-500"
+          />
+
+          <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
+            <div className="bg-white/[0.02] rounded-md border border-white/10 p-4 hover:bg-white/[0.05]">
+              <div className="text-sm font-semibold text-zinc-300">
+                当選人数
               </div>
-            )}
-          </div>
-
-          <div className="rounded-md border border-gray-200 bg-gray-50 p-3">
-            <div className="text-xs font-semibold text-gray-700">設定</div>
-            <label className="mt-2 flex items-center gap-2 text-sm">
               <input
-                type="checkbox"
-                checked={allowDuplicates}
-                onChange={(e) => setAllowDuplicates(e.target.checked)}
+                type="number"
+                min={1}
+                max={allowDuplicates ? 999 : Math.max(1, maxWithoutDup)}
+                value={winnerCount}
+                onChange={(e) => setWinnerCount(Number(e.target.value))}
+                className="mt-2 w-full rounded-md bg-white/[0.02] border border-white/10 px-2 py-1 text-sm text-zinc-100 focus:outline-none focus:ring-2 focus:ring-zinc-500"
               />
-              重複を許可する（同じ人が複数回当選OK）
-            </label>
-
-            <label className="mt-2 flex items-center gap-2 text-sm">
-              <input
-                type="checkbox"
-                checked={saveHistory}
-                onChange={(e) => setSaveHistory(e.target.checked)}
-              />
-              履歴を保存（このブラウザ内）
-            </label>
-          </div>
-
-          <div className="flex flex-col justify-end gap-2">
-            <button
-              type="button"
-              disabled={!canRun}
-              onClick={handleShuffle}
-              className="rounded-md bg-gray-900 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              シャッフル（順番）
-            </button>
-            <button
-              type="button"
-              disabled={!canRun}
-              onClick={handleDraw}
-              className="rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              抽選（当選者）
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* 結果カード */}
-      <section className="mb-6 rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-        <div className="mb-2 flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-gray-800">結果</h2>
-          <div className="flex items-center gap-2">
-            {resultText && <CopyButton text={resultText} />}
-          </div>
-        </div>
-
-        {!resultText ? (
-          <p className="text-sm text-gray-500">
-            まだ結果がありません。上で「シャッフル」または「抽選」を実行してください。
-          </p>
-        ) : (
-          <pre className="whitespace-pre-wrap break-words rounded-md border border-gray-100 bg-gray-50 p-3 text-[12px] text-gray-800">
-            {resultText}
-          </pre>
-        )}
-
-        {winners && winners.length > 0 && (
-          <div className="mt-4 rounded-md border border-green-200 bg-green-50 p-3">
-            <div className="text-xs font-semibold text-green-800">
-              当選者（{winners.length}）
-            </div>
-            <div className="mt-2 flex flex-wrap gap-2">
-              {winners.map((w, i) => (
-                <span
-                  key={`${w}-${i}`}
-                  className="rounded-full bg-white px-3 py-1 text-sm font-semibold text-gray-800 shadow-sm"
-                >
-                  {w}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
-      </section>
-
-      {/* 履歴 */}
-      <section className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-        <div className="mb-2 flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-gray-800">履歴</h2>
-          <button
-            type="button"
-            onClick={clearHistory}
-            className="rounded-md border border-gray-300 bg-white px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50"
-          >
-            履歴をクリア
-          </button>
-        </div>
-
-        {history.length === 0 ? (
-          <p className="text-sm text-gray-500">履歴はまだありません。</p>
-        ) : (
-          <div className="space-y-2">
-            {history.map((h) => {
-              const dt = new Date(h.createdAt);
-              const title =
-                h.mode === "shuffle"
-                  ? "シャッフル"
-                  : `抽選（${h.count}）${
-                      h.allowDuplicates ? "重複あり" : "重複なし"
-                    }`;
-
-              const textToCopy =
-                h.mode === "shuffle"
-                  ? (h.ordered ?? []).join("\n")
-                  : (h.winners ?? []).join("\n");
-
-              return (
-                <div
-                  key={h.id}
-                  className="rounded-md border border-gray-100 bg-gray-50 p-3"
-                >
-                  <div className="flex items-center justify-between gap-2">
-                    <div>
-                      <div className="text-xs font-semibold text-gray-800">
-                        {title}
-                      </div>
-                      <div className="text-[11px] text-gray-500">
-                        {dt.toLocaleString()}
-                      </div>
-                    </div>
-                    <CopyButton text={textToCopy} />
-                  </div>
-
-                  {h.mode === "winners" && h.winners?.length > 0 && (
-                    <div className="mt-2 flex flex-wrap gap-2">
-                      {h.winners.map((w, i) => (
-                        <span
-                          key={`${h.id}-${w}-${i}`}
-                          className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-gray-800"
-                        >
-                          {w}
-                        </span>
-                      ))}
-                    </div>
-                  )}
+              {!allowDuplicates && (
+                <div className="mt-2 text-xs text-zinc-500">
+                  重複なしの場合、最大 {maxWithoutDup} 人まで
                 </div>
-              );
-            })}
+              )}
+            </div>
+
+            <div className="bg-white/[0.02] rounded-md border border-white/10 p-4 hover:bg-white/[0.05]">
+              <div className="text-sm font-semibold text-zinc-300">設定</div>
+              <label className="mt-2 flex items-center gap-2 text-sm text-zinc-300">
+                <input
+                  type="checkbox"
+                  checked={allowDuplicates}
+                  onChange={(e) => setAllowDuplicates(e.target.checked)}
+                  className="rounded border-white/10 bg-white/[0.02] text-zinc-100 focus:ring-zinc-500"
+                />
+                重複を許可する（同じ人が複数回当選OK）
+              </label>
+
+              <label className="mt-2 flex items-center gap-2 text-sm text-zinc-300">
+                <input
+                  type="checkbox"
+                  checked={saveHistory}
+                  onChange={(e) => setSaveHistory(e.target.checked)}
+                  className="rounded border-white/10 bg-white/[0.02] text-zinc-100 focus:ring-zinc-500"
+                />
+                履歴を保存（このブラウザ内）
+              </label>
+            </div>
+
+            <div className="flex flex-col justify-end gap-2">
+              <button
+                type="button"
+                disabled={!canRun}
+                onClick={handleShuffle}
+                className="rounded-md bg-zinc-700 px-4 py-2 text-sm font-semibold text-zinc-100 hover:bg-zinc-600 focus:outline-none focus:ring-2 focus:ring-zinc-500 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                シャッフル（順番）
+              </button>
+              <button
+                type="button"
+                disabled={!canRun}
+                onClick={handleDraw}
+                className="rounded-md bg-zinc-700 px-4 py-2 text-sm font-semibold text-zinc-100 hover:bg-zinc-600 focus:outline-none focus:ring-2 focus:ring-zinc-500 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                抽選（当選者）
+              </button>
+            </div>
           </div>
-        )}
-      </section>
+        </section>
+
+        {/* 結果セクション */}
+        <section className="mb-12 bg-white/[0.02] rounded-md p-6 border border-white/10">
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-2xl font-semibold text-zinc-100">結果</h2>
+            <div className="flex items-center gap-2">
+              {resultText && <CopyButton text={resultText} />}
+            </div>
+          </div>
+
+          {!resultText ? (
+            <p className="text-sm text-zinc-500">
+              まだ結果がありません。上で「シャッフル」または「抽選」を実行してください。
+            </p>
+          ) : (
+            <pre className="whitespace-pre-wrap break-words rounded-md bg-white/[0.02] border border-white/10 p-3 text-sm text-zinc-100">
+              {resultText}
+            </pre>
+          )}
+
+          {winners && winners.length > 0 && (
+            <div className="mt-6 bg-white/[0.02] rounded-md border border-white/10 p-4">
+              <div className="text-sm font-semibold text-zinc-300">
+                当選者（{winners.length}）
+              </div>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {winners.map((w, i) => (
+                  <span
+                    key={`${w}-${i}`}
+                    className="rounded-md bg-white/[0.05] px-3 py-1 text-sm font-semibold text-zinc-100 hover:bg-white/[0.1]"
+                  >
+                    {w}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+        </section>
+
+        {/* 履歴セクション */}
+        <section className="bg-white/[0.02] rounded-md p-6 border border-white/10">
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-2xl font-semibold text-zinc-100">履歴</h2>
+            <button
+              type="button"
+              onClick={clearHistory}
+              className="rounded-md border border-white/10 bg-white/[0.02] px-3 py-1 text-sm font-semibold text-zinc-300 hover:bg-white/[0.05] focus:outline-none focus:ring-2 focus:ring-zinc-500"
+            >
+              履歴をクリア
+            </button>
+          </div>
+
+          {history.length === 0 ? (
+            <p className="text-sm text-zinc-500">履歴はまだありません。</p>
+          ) : (
+            <div className="space-y-3">
+              {history.map((h) => {
+                const dt = new Date(h.createdAt);
+                const title =
+                  h.mode === "shuffle"
+                    ? "シャッフル"
+                    : `抽選（${h.count}）${
+                        h.allowDuplicates ? "重複あり" : "重複なし"
+                      }`;
+
+                const textToCopy =
+                  h.mode === "shuffle"
+                    ? (h.ordered ?? []).join("\n")
+                    : (h.winners ?? []).join("\n");
+
+                return (
+                  <div
+                    key={h.id}
+                    className="bg-white/[0.02] rounded-md border border-white/10 p-4 hover:bg-white/[0.05]"
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <div>
+                        <div className="text-sm font-semibold text-zinc-100">
+                          {title}
+                        </div>
+                        <div className="text-xs text-zinc-500">
+                          {dt.toLocaleString()}
+                        </div>
+                      </div>
+                      <CopyButton text={textToCopy} />
+                    </div>
+
+                    {h.mode === "winners" && h.winners?.length > 0 && (
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {h.winners.map((w, i) => (
+                          <span
+                            key={`${h.id}-${w}-${i}`}
+                            className="rounded-md bg-white/[0.05] px-3 py-1 text-xs font-semibold text-zinc-100 hover:bg-white/[0.1]"
+                          >
+                            {w}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </section>
+      </div>
     </div>
   );
 }

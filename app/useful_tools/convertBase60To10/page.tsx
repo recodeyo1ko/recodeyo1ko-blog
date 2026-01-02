@@ -1,7 +1,8 @@
 "use client";
+
 import { useState } from "react";
-import ReferenceTable from "./ReferenceTable";
-import ToolHeader from "@/app/components/ToolHeader";
+import ReferenceTable from "./_components/ReferenceTable";
+import ToolHeader from "@/app/components/useful_tool/ToolHeader";
 
 const parseTimeToMinutes = (time: string): number => {
   const [hours, minutes] = time.split(":").map(Number);
@@ -34,28 +35,19 @@ const DecimalConversionPage = () => {
     const startMinutes = parseTimeToMinutes(startTime);
     const endMinutes = parseTimeToMinutes(endTime);
     const breakMinutes = parseTimeToMinutes(breakTime);
-    const calculatedWorkMinutes = endMinutes - startMinutes - breakMinutes;
-
-    if (calculatedWorkMinutes < 0) {
-      alert("終了時間が開始時間より早いか、休憩時間が稼働時間を超えています。");
-      return;
-    }
-
-    setWorkMinutes(calculatedWorkMinutes);
+    const totalWorkMinutes = endMinutes - startMinutes - breakMinutes;
+    setWorkMinutes(totalWorkMinutes);
   };
 
   // 任意の 60進 ⇔ 10進 変換用
   const [conversionType, setConversionType] =
     useState<ConversionType>("toDecimal");
-  const [conversionInput, setConversionInput] = useState<string>("00:00");
-  const [conversionResult, setConversionResult] = useState<string | null>(null);
+  const [inputValue, setInputValue] = useState("00:00");
+  const [result, setResult] = useState<string | null>(null);
 
-  const handleSimpleConversion = () => {
+  const handleConvert = () => {
     if (conversionType === "toDecimal") {
-      const [hours, minutes] = conversionInput
-        .split(":")
-        .map((num) => parseInt(num, 10));
-
+      const [hours, minutes] = inputValue.split(":").map(Number);
       if (
         isNaN(hours) ||
         isNaN(minutes) ||
@@ -66,192 +58,179 @@ const DecimalConversionPage = () => {
         alert("無効な入力です。正しい形式で時間を入力してください。");
         return;
       }
-
       const decimal = hours + minutes / 60;
-      setConversionResult(decimal.toFixed(3));
+      setResult(decimal.toFixed(3));
     } else {
-      const decimalValue = parseFloat(conversionInput);
+      const decimalValue = parseFloat(inputValue);
       if (isNaN(decimalValue)) {
         alert("無効な入力です。少数を入力してください。");
         return;
       }
-
       const hours = Math.floor(decimalValue);
       const minutes = Math.round((decimalValue - hours) * 60);
-      setConversionResult(`${hours}:${minutes.toString().padStart(2, "0")}`);
+      setResult(`${hours}:${minutes.toString().padStart(2, "0")}`);
     }
   };
 
   return (
-    <div className="mx-auto max-w-screen-2xl px-4 py-8">
-      {/* タイトルと使い方 */}
-      <ToolHeader
-        title="任意の時間を 60進数 ⇔ 10進数 変換ツール"
-        description="稼働時間の計算と、任意の時間を60進数（HH:MM形式）から10進数へ、またはその逆に変換できます。"
-        steps={
-          <>
-            機能1:
-            <li>
-              開始時間、終了時間、休憩時間を入力して「稼働時間を計算」ボタンを押すと、総稼働時間が表示されます。
-            </li>
-            機能2:
-            <li>
-              60進数（HH:MM形式）から10進数へ、またはその逆の変換を選択し、値を入力して「変換」ボタンを押すと、変換結果が表示されます。
-            </li>
-          </>
-        }
-      />
+    <div className="min-h-screen bg-zinc-900">
+      <div className="mx-auto max-w-5xl px-6 py-12">
+        <ToolHeader
+          title="10進・60進 数変換ツール"
+          description="稼働時間の計算と、10進数と60進数（時間表記）の相互変換を行うツールです。"
+          stepsVariant="ordered"
+          className="mb-12"
+          steps={
+            <>
+              <li>
+                開始時間、終了時間、休憩時間を入力して「計算」ボタンを押すと、実働時間が表示されます。
+              </li>
+              <li>
+                10進数と60進数の変換モードを選択し、対応する形式で値を入力します。
+              </li>
+              <li>「変換」ボタンを押すと、変換結果が表示されます。</li>
+            </>
+          }
+        />
 
-      <div className="w-full max-w-4xl space-y-6">
-        {/*  ボックス1：稼働時間計算 */}
-        <section className="border rounded-lg shadow-sm bg-white p-4 md:p-6">
-          <h2 className="text-lg font-semibold mb-4">稼働時間計算</h2>
-
-          <div className="flex flex-col space-y-4 mb-4">
-            {/* 入力群 */}
-            <div className="flex items-center space-x-2">
-              <label htmlFor="startTime" className="font-medium w-32">
-                開始時間 (HH:MM):
+        {/* 稼働時間計算 */}
+        <section className="mb-12 bg-white/[0.02] rounded-md p-6 border border-white/10">
+          <h2 className="text-2xl font-semibold text-zinc-100 mb-4">
+            稼働時間計算
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div>
+              <label className="block text-sm font-medium text-zinc-300 mb-1">
+                開始時間
               </label>
               <input
                 type="time"
-                id="startTime"
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
-                className="border rounded-md px-2 py-1 flex-1"
+                className="w-full bg-white/[0.02] border border-white/10 rounded-md px-2 py-1 text-zinc-100 focus:outline-none focus:ring-2 focus:ring-zinc-500"
               />
             </div>
-
-            <div className="flex items-center space-x-2">
-              <label htmlFor="endTime" className="font-medium w-32">
-                終了時間 (HH:MM):
+            <div>
+              <label className="block text-sm font-medium text-zinc-300 mb-1">
+                終了時間
               </label>
               <input
                 type="time"
-                id="endTime"
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
-                className="border rounded-md px-2 py-1 flex-1"
+                className="w-full bg-white/[0.02] border border-white/10 rounded-md px-2 py-1 text-zinc-100 focus:outline-none focus:ring-2 focus:ring-zinc-500"
               />
             </div>
-
-            <div className="flex items-center space-x-2">
-              <label htmlFor="breakTime" className="font-medium w-32">
-                休憩時間 (HH:MM):
+            <div>
+              <label className="block text-sm font-medium text-zinc-300 mb-1">
+                休憩時間
               </label>
               <input
                 type="time"
-                id="breakTime"
                 value={breakTime}
                 onChange={(e) => setBreakTime(e.target.value)}
-                className="border rounded-md px-2 py-1 flex-1"
+                className="w-full bg-white/[0.02] border border-white/10 rounded-md px-2 py-1 text-zinc-100 focus:outline-none focus:ring-2 focus:ring-zinc-500"
               />
             </div>
-
-            {/* ボタンを右下に */}
+          </div>
+          <div className="flex gap-4">
             <button
               onClick={handleConvertWorkTime}
-              className="mt-2 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 self-end"
+              className="px-4 py-2 bg-zinc-700 text-zinc-100 rounded-md hover:bg-zinc-600 focus:outline-none focus:ring-2 focus:ring-zinc-500"
             >
-              稼働時間を計算
+              計算
             </button>
+            {workMinutes !== null && (
+              <div className="text-sm text-zinc-300">
+                実働時間: {formatMinutesToHHMM(workMinutes)} (
+                {formatMinutesToDecimal(workMinutes)} 時間)
+              </div>
+            )}
           </div>
         </section>
 
-        {/*  ボックス2：任意の 60進 ⇔ 10進 変換 */}
-        <section className="border rounded-lg shadow-sm bg-white p-4 md:p-6">
-          <h2 className="text-lg font-semibold mb-4">
-            任意の時間を 60進数 ⇔ 10進数 変換
-          </h2>
+        {/* 変換 */}
+        <section className="mb-12 bg-white/[0.02] rounded-md p-6 border border-white/10">
+          <h2 className="text-2xl font-semibold text-zinc-100 mb-4">変換</h2>
+          <div className="flex flex-col space-y-4">
+            <div className="flex items-center space-x-4">
+              <label className="flex items-center text-sm text-zinc-300">
+                <input
+                  type="radio"
+                  value="toDecimal"
+                  checked={conversionType === "toDecimal"}
+                  onChange={() => {
+                    setConversionType("toDecimal");
+                    setInputValue("00:00");
+                    setResult(null);
+                  }}
+                  className="mr-1 bg-white/[0.02] border-white/10 text-zinc-100 focus:ring-zinc-500"
+                />
+                60進数 → 10進数
+              </label>
+              <label className="flex items-center text-sm text-zinc-300">
+                <input
+                  type="radio"
+                  value="toSexagesimal"
+                  checked={conversionType === "toSexagesimal"}
+                  onChange={() => {
+                    setConversionType("toSexagesimal");
+                    setInputValue("0.0");
+                    setResult(null);
+                  }}
+                  className="mr-1 bg-white/[0.02] border-white/10 text-zinc-100 focus:ring-zinc-500"
+                />
+                10進数 → 60進数
+              </label>
+            </div>
 
-          <div className="flex items-center mb-4 space-x-4">
-            <label className="flex items-center text-sm md:text-base">
-              <input
-                type="radio"
-                value="toDecimal"
-                checked={conversionType === "toDecimal"}
-                onChange={() => {
-                  setConversionType("toDecimal");
-                  setConversionInput("00:00");
-                  setConversionResult(null);
-                }}
-                className="mr-1"
-              />
-              60進数（HH:MM）→ 10進数
-            </label>
-            <label className="flex items-center text-sm md:text-base">
-              <input
-                type="radio"
-                value="toSexagesimal"
-                checked={conversionType === "toSexagesimal"}
-                onChange={() => {
-                  setConversionType("toSexagesimal");
-                  setConversionInput("0.0");
-                  setConversionResult(null);
-                }}
-                className="mr-1"
-              />
-              10進数 → 60進数（HH:MM）
-            </label>
-          </div>
+            <div className="text-sm text-zinc-500 mb-2">
+              {conversionType === "toDecimal" && "例: 13:45 (13時間45分を入力)"}
+              {conversionType === "toSexagesimal" &&
+                "例: 13.75 (13.75時間を入力)"}
+            </div>
 
-          <div className="mb-3 text-sm text-gray-600">
-            {conversionType === "toDecimal" && (
-              <p>例: 13:45 (13時間45分を入力)</p>
-            )}
-            {conversionType === "toSexagesimal" && (
-              <p>例: 13.75 (13.75時間を入力)</p>
-            )}
-          </div>
-
-          <div className="w-full">
-            {/* 入力欄 */}
-            <div className="flex items-center w-full">
+            <div className="flex items-center space-x-4">
               <div className="flex-1">
                 {conversionType === "toDecimal" ? (
                   <input
                     type="time"
                     step="60"
-                    value={conversionInput}
-                    onChange={(e) => setConversionInput(e.target.value)}
-                    className="w-full p-2 border rounded"
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    className="w-full bg-white/[0.02] border border-white/10 rounded-md px-2 py-1 text-zinc-100 focus:outline-none focus:ring-2 focus:ring-zinc-500"
                   />
                 ) : (
                   <input
                     type="number"
                     step="0.01"
-                    value={conversionInput}
-                    onChange={(e) => setConversionInput(e.target.value)}
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
                     placeholder="例: 13.75"
-                    className="w-full p-2 border rounded"
+                    className="w-full bg-white/[0.02] border border-white/10 rounded-md px-2 py-1 text-zinc-100 focus:outline-none focus:ring-2 focus:ring-zinc-500"
                   />
                 )}
               </div>
-            </div>
-
-            {/* 変換ボタン（下・右寄せ） */}
-            <div className="mt-3 flex justify-end">
               <button
-                onClick={handleSimpleConversion}
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                onClick={handleConvert}
+                className="px-4 py-2 bg-zinc-700 text-zinc-100 rounded-md hover:bg-zinc-600 focus:outline-none focus:ring-2 focus:ring-zinc-500"
               >
                 変換
               </button>
+              <div className="flex-1">
+                {result && (
+                  <div className="text-sm font-mono text-zinc-100">
+                    {result}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-
-          {conversionResult !== null && (
-            <div className="mt-3 text-right">
-              <p className="text-lg font-medium">{conversionResult}</p>
-            </div>
-          )}
         </section>
 
-        {/*  ボックス3：参考表 */}
-        <section className="border rounded-lg shadow-sm bg-white p-4 md:p-6">
-          <h2 className="text-xl font-bold mb-4">
-            参考: 60進数と10進数の対応表
-          </h2>
+        {/* 参照表 */}
+        <section className="bg-white/[0.02] rounded-md p-6 border border-white/10">
+          <h2 className="text-2xl font-semibold text-zinc-100 mb-4">参照表</h2>
           <ReferenceTable />
         </section>
       </div>

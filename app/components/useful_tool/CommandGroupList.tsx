@@ -1,4 +1,4 @@
-import CopyButton from "./CopyButton";
+import CopyButton from "@/app/components/CopyButton";
 
 export type CommandItem = {
   label: string;
@@ -14,10 +14,8 @@ export type CommandGroup = {
 type Props = {
   groups: CommandGroup[];
 
-  // 見た目を外から調整できるように（任意）
   className?: string;
 
-  // コマンド表示の調整（任意）
   showCommandBlock?: boolean;
 };
 
@@ -31,12 +29,12 @@ export default function CommandGroupList({
       {groups.map((group) => (
         <div
           key={group.title}
-          className="rounded-xl border border-gray-200 bg-white p-4 text-sm shadow-sm"
+          className="rounded-md border border-white/10 bg-white/[0.02] p-4 text-sm"
         >
-          <h3 className="text-sm font-semibold text-gray-800">{group.title}</h3>
+          <h3 className="text-sm font-semibold text-zinc-100">{group.title}</h3>
 
           {group.description && (
-            <p className="mt-1 mb-3 text-xs text-gray-500">
+            <p className="mt-1 mb-3 text-xs text-zinc-500">
               {group.description}
             </p>
           )}
@@ -45,17 +43,17 @@ export default function CommandGroupList({
             {group.items.map((item) => (
               <div
                 key={`${group.title}-${item.label}`} // label重複対策
-                className="flex flex-col gap-1 rounded-md border border-gray-100 bg-gray-50 p-2 text-[11px]"
+                className="flex flex-col gap-1 rounded-md border border-white/10 bg-white/[0.02] p-2 text-[11px] hover:bg-white/[0.05]"
               >
                 <div className="flex items-center justify-between gap-2">
-                  <span className="font-semibold text-gray-700">
+                  <span className="font-semibold text-zinc-100">
                     {item.label}
                   </span>
                   <CopyButton text={item.command} />
                 </div>
 
                 {showCommandBlock && (
-                  <pre className="whitespace-pre-wrap break-all font-mono text-[11px] text-gray-800">
+                  <pre className="whitespace-pre-wrap break-all font-mono text-[11px] text-zinc-300">
                     {item.command}
                   </pre>
                 )}

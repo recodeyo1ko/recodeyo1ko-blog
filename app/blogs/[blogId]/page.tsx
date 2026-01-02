@@ -4,14 +4,35 @@ import markdownHtml from "zenn-markdown-html";
 import { load } from "cheerio";
 import hljs from "highlight.js";
 import "highlight.js/styles/night-owl.css";
-import LinkButton from "../../components/LinkButton";
+import Link from "next/link";
 
 export async function generateStaticParams() {
   const { contents } = await getList();
+  return contents.map((blog: { id: string }) => ({ blogId: blog.id }));
+}
 
-  return contents.map((blog: { id: string }) => ({
-    blogId: blog.id,
-  }));
+function PillLink({
+  href,
+  children,
+}: {
+  href: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <Link
+      href={href}
+      className="
+        inline-flex items-center
+        rounded-md px-2 py-0.5
+        text-xs text-zinc-200
+        border border-white/10 bg-white/[0.03]
+        hover:bg-white/[0.06] hover:border-white/20
+        transition-colors
+      "
+    >
+      {children}
+    </Link>
+  );
 }
 
 export default async function StaticDetailPage({
@@ -20,13 +41,10 @@ export default async function StaticDetailPage({
   params: { blogId: string };
 }) {
   const blog = await getDetail(blogId);
-
   if (!blog) notFound();
 
-  // ✅ 投稿日時はCMSの日時を使う（なければ表示しない/代替）
   const published =
     blog.publishedAt ?? blog.createdAt ?? blog.updatedAt ?? null;
-
   const time = published
     ? new Date(published).toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" })
     : null;
@@ -42,58 +60,61 @@ export default async function StaticDetailPage({
   html = $.html();
 
   return (
-    <div>
-      <div className="lg:col-span-2 pl-10">
-        <h1 className="my-4 text-center text-2xl font-bold text-gray-800 sm:text-3xl md:mb-6">
+    <article className="mx-auto w-full max-w-3xl">
+      <header className="pt-2">
+        <h1 className="text-center text-2xl sm:text-3xl font-semibold text-zinc-100 tracking-tight">
           {blog.title}
         </h1>
 
-        {/* 投稿日時 */}
-        <div className="flex justify-end text-sm text-gray-500">
-          {time ? <div>投稿日時：{time}</div> : <div>投稿日時：-</div>}
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-xs text-zinc-500">
+          <div className="inline-flex items-center gap-1">
+            <span className="text-zinc-600">🕒</span>
+            <span>{time ?? "-"}</span>
+          </div>
+
+          <div className="h-3 w-px bg-white/10 hidden sm:block" />
+
+          <div className="inline-flex items-center gap-2">
+            <span className="text-zinc-600">📁</span>
+            {blog.category?.name ? (
+              <PillLink
+                href={`/categories/${encodeURIComponent(blog.category.name)}`}
+              >
+                {blog.category.name}
+              </PillLink>
+            ) : (
+              <span className="text-zinc-500">未分類</span>
+            )}
+          </div>
+
+          <div className="h-3 w-px bg-white/10 hidden sm:block" />
+
+          <div className="inline-flex items-center gap-2">
+            <span className="text-zinc-600">#</span>
+            {blog.tags && blog.tags.length > 0 ? (
+              <div className="flex flex-wrap justify-center gap-1">
+                {blog.tags.map((tag: { id: string; name: string }) => (
+                  <PillLink
+                    key={tag.id}
+                    href={`/tags/${encodeURIComponent(tag.name)}`}
+                  >
+                    {tag.name}
+                  </PillLink>
+                ))}
+              </div>
+            ) : (
+              <span className="text-zinc-500">-</span>
+            )}
+          </div>
         </div>
 
-        {/* カテゴリー */}
-        <div className="mt-2 flex justify-end items-center gap-2">
-          <div className="text-sm text-gray-500">ジャンル：</div>
-          {blog.category?.name ? (
-            <LinkButton
-              href={`/categories/${blog.category.name}`}
-              variant="category"
-            >
-              {blog.category.name}
-            </LinkButton>
-          ) : (
-            <div className="text-sm text-gray-500">未分類</div>
-          )}
-        </div>
+        <div className="mt-6 border-t border-white/10" />
+      </header>
 
-        {/* タグ */}
-        <div className="mt-2 flex justify-end items-start gap-2">
-          <div className="text-sm text-gray-500 mt-1">技術タグ：</div>
-          {blog.tags && blog.tags.length > 0 ? (
-            <div className="flex flex-wrap justify-end gap-1">
-              {blog.tags.map((tag: { id: string; name: string }) => (
-                <LinkButton
-                  key={tag.id}
-                  href={`/tags/${tag.name}`}
-                  variant="tag"
-                >
-                  {tag.name}
-                </LinkButton>
-              ))}
-            </div>
-          ) : (
-            <div className="text-sm text-gray-500">-</div>
-          )}
-        </div>
-
-        {/* 本文 */}
-        <div
-          className="markdown mt-6"
-          dangerouslySetInnerHTML={{ __html: html }}
-        />
-      </div>
-    </div>
+      <div
+        className="markdown mt-6"
+        dangerouslySetInnerHTML={{ __html: html }}
+      />
+    </article>
   );
 }

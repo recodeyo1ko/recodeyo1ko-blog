@@ -19,7 +19,17 @@ export default function CopyButton({ text }: { text: string }) {
     <button
       type="button"
       onClick={handleClick}
-      className="rounded-md border border-gray-300 bg-white px-2 py-1 text-[10px] font-semibold text-gray-700 hover:bg-gray-50 active:scale-[0.97]"
+      className="
+        rounded-md px-2 py-1
+        text-[10px] font-medium
+        text-zinc-200
+        border border-white/10
+        bg-white/[0.02]
+        hover:bg-white/[0.06] hover:border-white/20
+        active:scale-[0.97]
+        transition-colors
+        select-none
+      "
     >
       {copied ? "コピー済み" : "コピー"}
     </button>

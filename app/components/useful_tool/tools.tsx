@@ -1,4 +1,3 @@
-// app/useful_tools/tools.ts
 export type ToolItem = {
   title: string;
   description: string;

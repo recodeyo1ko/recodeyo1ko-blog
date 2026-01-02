@@ -1,44 +1,118 @@
-import SidebarItemList from "./SidebarItemList";
-import { getCategoryList, getTagList } from "../libs/microcms";
+import { getList } from "../libs/microcms";
+import SidebarTree from "./SidebarTree";
 
-export const Sidebar = () => {
-  return (
-    <div className="mx-2 m-auto overflow-hidden rounded-lg border p-10">
-      <div className="text-center">
-        <div className="w-20 h-20 rounded-full inline-flex items-center justify-center bg-gray-800 text-gray-600">
-          <img
-            src="/img/pixel_man.png"
-            alt="man"
-            className="w-20 h-20 rounded-full"
-          />
-        </div>
-        <div className="flex flex-col items-center justify-center">
-          <h2 className="font-medium title-font mt-4 text-gray-700 text-lg text-center">
-            ReCodeYoiko
-          </h2>
-          <div className="w-12 h-1 bg-indigo-500 rounded mt-2 mb-4"></div>
-          <p className="text-base text-gray-400 text-left">
-            自身のアウトプットのために作成したブログです。
-            機能・デザイン共に未完成な部分が多いですが、随時改善していきます。
-          </p>
-        </div>
-      </div>
+type Category = { id: string; name: string };
+type Tag = { id: string; name: string };
 
-      <SidebarItemList
-        title="カテゴリー"
-        fetcher={getCategoryList}
-        hrefPrefix="categories"
-        variant="category"
-      />
-
-      <SidebarItemList
-        title="タグ"
-        fetcher={getTagList}
-        hrefPrefix="tags"
-        variant="tag"
-      />
-    </div>
-  );
+type Blog = {
+  id: string;
+  category: Category;
+  tags?: Tag[];
 };
 
-export default Sidebar;
+type ToolItem = { label: string; href: string; icon?: string };
+type ToolGroup = { title: string; items: ToolItem[] };
+
+const TOOL_GROUPS: ToolGroup[] = [
+  {
+    title: "単位変換系",
+    items: [
+      {
+        label: "人時・人日・人月 変換",
+        href: "/useful_tools/workTimeConversion",
+        icon: "",
+      },
+      {
+        label: "60進数⇔10進数変換",
+        href: "/useful_tools/convertBase60To10",
+        icon: "",
+      },
+      {
+        label: "Byte 単位変換",
+        href: "/useful_tools/byteConversion",
+        icon: "",
+      },
+    ],
+  },
+  {
+    title: "ファイル系",
+    items: [
+      {
+        label: "簡易ハッシュ差分チェッカー",
+        href: "/useful_tools/compressionTool",
+        icon: "",
+      },
+    ],
+  },
+  {
+    title: "テキスト処理系",
+    items: [
+      {
+        label: "差分チェッカー",
+        href: "/useful_tools/diffChecker",
+        icon: "",
+      },
+      { label: "文章マスキング", href: "/useful_tools/maskingTool", icon: "" },
+      { label: "半角⇔全角", href: "/useful_tools/hankakuZenkaku", icon: "" },
+      {
+        label: "改行コード判定・変換",
+        href: "/useful_tools/newLine",
+        icon: "",
+      },
+      {
+        label: "URLエンコード・デコード",
+        href: "/useful_tools/urlEncodeDecode",
+        icon: "",
+      },
+    ],
+  },
+  {
+    title: "その他便利ツール",
+    items: [
+      {
+        label: "会費計算機",
+        href: "/useful_tools/drinkPartyOrganizer",
+        icon: "",
+      },
+      { label: "くじ引き", href: "/useful_tools/lottery", icon: "" },
+    ],
+  },
+];
+
+export default async function Sidebar() {
+  const { contents } = await getList();
+  const blogs = contents as Blog[];
+
+  // categoryName -> { category, tagsMap }
+  const map = new Map<string, { category: Category; tags: Map<string, Tag> }>();
+
+  for (const blog of blogs) {
+    const cat = blog.category;
+    const tags = blog.tags ?? [];
+
+    if (!map.has(cat.name)) {
+      map.set(cat.name, { category: cat, tags: new Map() });
+    }
+    const bucket = map.get(cat.name)!;
+    for (const tag of tags) bucket.tags.set(tag.name, tag);
+  }
+
+  const categoryTree = Array.from(map.values())
+    .map((v) => ({
+      category: v.category,
+      tags: Array.from(v.tags.values()).sort((a, b) =>
+        a.name.localeCompare(b.name, "ja")
+      ),
+    }))
+    .sort((a, b) => a.category.name.localeCompare(b.category.name, "ja"));
+
+  return (
+    <SidebarTree
+      title="仕事を頑張るために"
+      homeHref="/"
+      authorName="recodeyo1ko"
+      categoryTree={categoryTree}
+      toolGroups={TOOL_GROUPS}
+    />
+  );
+}

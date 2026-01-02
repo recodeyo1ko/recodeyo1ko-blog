@@ -1,7 +1,6 @@
 "use client";
+import ToolHeader from "@/app/components/useful_tool/ToolHeader";
 import CopyButton from "../../components/CopyButton";
-import ToolHeader from "@/app/components/ToolHeader";
-
 import { useMemo, useState } from "react";
 
 /** 改行種別 */
@@ -59,7 +58,7 @@ function badgeColor(kind: NewlineKind) {
       return "bg-red-100 text-red-800";
     case "NONE":
     default:
-      return "bg-gray-100 text-gray-700";
+      return "bg-zinc-100 text-zinc-700";
   }
 }
 
@@ -125,7 +124,6 @@ export default function NewlineToolPage() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // テキスト系のみ（ざっくり）
     if (
       file.type &&
       !file.type.startsWith("text/") &&
@@ -144,27 +142,33 @@ export default function NewlineToolPage() {
   };
 
   return (
-    <div className="mx-auto min-h-screen max-w-screen-lg bg-gray-50 px-4 py-8">
-      {/* タイトルと使い方 */}
-      <ToolHeader
-        title="改行コード 判定・変換ツール"
-        description="テキストの改行コード（LF / CRLF /CR）を判定し、任意の形式に一括変換できます。"
-        steps={
-          <>
-            <li>入力欄にテキストを貼り付け（またはファイルを選択）します。</li>
-            <li>現在の改行状況（LF / CRLF / 混在）を自動判定します。</li>
-            <li>変換先を選んで「変換」すると、結果が出ます。</li>
-            <li>出力欄の内容はコピーや.txtダウンロードが可能です。</li>
-          </>
-        }
-      />
-      {/* 入力カード */}
-      <section className="mb-6 rounded-lg border bg-white p-4 shadow-sm md:p-6">
-        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <div className="flex items-center gap-2">
-            <h2 className="text-lg font-semibold text-gray-800">入力</h2>
+    <div className="min-h-screen bg-zinc-900">
+      <div className="mx-auto max-w-5xl px-6 py-12">
+        <ToolHeader
+          title="改行コード変換ツール"
+          description="テキストの改行コードを、LF・CRLF・CRのいずれかに変換します。"
+          stepsVariant="ordered"
+          className="mb-12"
+          steps={
+            <>
+              <li>
+                テキストを入力欄に貼り付けるか、ファイルから読み込みます。
+              </li>
+              <li>現在の改行コード種別と行数が表示されます。</li>
+              <li>変換先の改行コードを選択し、「変換」ボタンを押します。</li>
+              <li>
+                変換結果が出力欄に表示されるので、必要に応じてコピー・ダウンロードします。
+              </li>
+            </>
+          }
+        />
+
+        {/* 入力セクション */}
+        <section className="mb-12 bg-white/[0.02] rounded-md p-6 border border-white/10">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-2xl font-semibold text-zinc-100">入力</h2>
             <span
-              className={`rounded-full px-3 py-1 text-xs font-semibold ${badgeColor(
+              className={`rounded-md px-3 py-1 text-xs font-semibold ${badgeColor(
                 info.kind
               )}`}
             >
@@ -172,142 +176,141 @@ export default function NewlineToolPage() {
             </span>
           </div>
 
-          <div className="flex items-center gap-2">
-            <label className="text-xs text-gray-600">
+          <div className="mb-4 flex items-center gap-4">
+            <label className="text-sm text-zinc-400">
               ファイルから読み込み（テキスト）
               <input
                 type="file"
                 accept=".txt,.md,.csv,.json,.log,.xml,.yml,.yaml,text/*,application/json,application/xml"
                 onChange={onFileChange}
-                className="ml-2 text-xs"
+                className="ml-2 text-sm bg-transparent text-zinc-100"
               />
             </label>
           </div>
-        </div>
 
-        <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-3">
-          <div className="rounded-md border bg-gray-50 p-3 text-xs">
-            <div className="text-gray-500">行数（推定）</div>
-            <div className="mt-1 font-mono text-gray-800">
-              {lineCount.toLocaleString()}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div className="bg-white/[0.02] p-4 rounded-md border border-white/10 hover:bg-white/[0.05]">
+              <div className="text-sm text-zinc-500">行数（推定）</div>
+              <div className="text-lg font-mono text-zinc-100">
+                {lineCount.toLocaleString()}
+              </div>
+            </div>
+            <div className="bg-white/[0.02] p-4 rounded-md border border-white/10 hover:bg-white/[0.05]">
+              <div className="text-sm text-zinc-500">CRLF</div>
+              <div className="text-lg font-mono text-zinc-100">
+                {info.counts.crlf.toLocaleString()}
+              </div>
+            </div>
+            <div className="bg-white/[0.02] p-4 rounded-md border border-white/10 hover:bg-white/[0.05]">
+              <div className="text-sm text-zinc-500">LF / CR</div>
+              <div className="text-lg font-mono text-zinc-100">
+                {info.counts.lf.toLocaleString()} /{" "}
+                {info.counts.cr.toLocaleString()}
+              </div>
             </div>
           </div>
-          <div className="rounded-md border bg-gray-50 p-3 text-xs">
-            <div className="text-gray-500">CRLF</div>
-            <div className="mt-1 font-mono text-gray-800">
-              {info.counts.crlf.toLocaleString()}
+
+          <textarea
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="ここにテキストを貼り付けてください"
+            className="w-full h-64 p-4 bg-white/[0.02] border border-white/10 rounded-md font-mono text-sm leading-relaxed text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-500"
+          />
+        </section>
+
+        {/* 変換セクション */}
+        <section className="mb-12 bg-white/[0.02] rounded-md p-6 border border-white/10">
+          <h2 className="text-2xl font-semibold text-zinc-100 mb-4">変換</h2>
+
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+            <div>
+              <label className="block text-sm font-semibold text-zinc-300 mb-2">
+                変換先
+              </label>
+              <select
+                value={target}
+                onChange={(e) => setTarget(e.target.value as any)}
+                className="w-full md:w-64 p-2 bg-white/[0.02] border border-white/10 rounded-md text-zinc-100 focus:outline-none focus:ring-2 focus:ring-zinc-500"
+              >
+                <option value="LF">LF（Linux/macOS）</option>
+                <option value="CRLF">CRLF（Windows）</option>
+                <option value="CR">CR（旧Macなど）</option>
+              </select>
+              <p className="text-xs text-zinc-500 mt-1">
+                ※ 混在している場合も、選んだ形式に統一して出力します。
+              </p>
+            </div>
+
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={handleConvert}
+                className="px-4 py-2 bg-zinc-700 text-zinc-100 rounded-md hover:bg-zinc-600 focus:outline-none focus:ring-2 focus:ring-zinc-500"
+              >
+                変換
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setInput("");
+                  setOutput("");
+                }}
+                className="px-4 py-2 border border-white/10 bg-white/[0.02] text-zinc-300 rounded-md hover:bg-white/[0.05] focus:outline-none focus:ring-2 focus:ring-zinc-500"
+              >
+                クリア
+              </button>
             </div>
           </div>
-          <div className="rounded-md border bg-gray-50 p-3 text-xs">
-            <div className="text-gray-500">LF / CR</div>
-            <div className="mt-1 font-mono text-gray-800">
-              {info.counts.lf.toLocaleString()} /{" "}
-              {info.counts.cr.toLocaleString()}
+        </section>
+
+        {/* 出力セクション */}
+        <section className="bg-white/[0.02] rounded-md p-6 border border-white/10">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <h2 className="text-2xl font-semibold text-zinc-100">出力</h2>
+              <span
+                className={`rounded-md px-3 py-1 text-xs font-semibold ${badgeColor(
+                  outputInfo.kind
+                )}`}
+              >
+                {kindLabel(outputInfo.kind)}
+              </span>
+            </div>
+
+            <div className="flex gap-2">
+              <CopyButton text={output} />
+              <button
+                type="button"
+                onClick={downloadAsTxt}
+                disabled={!output}
+                className="px-3 py-1 border border-white/10 bg-white/[0.02] text-zinc-300 rounded-md hover:bg-white/[0.05] focus:outline-none focus:ring-2 focus:ring-zinc-500 disabled:opacity-50 text-sm"
+              >
+                .txt ダウンロード
+              </button>
+              <button
+                type="button"
+                onClick={handleSwap}
+                className="px-3 py-1 border border-white/10 bg-white/[0.02] text-zinc-300 rounded-md hover:bg-white/[0.05] focus:outline-none focus:ring-2 focus:ring-zinc-500 disabled:opacity-50 text-sm"
+                disabled={!output}
+                title="出力を入力に戻す"
+              >
+                出力を入力へ
+              </button>
             </div>
           </div>
-        </div>
 
-        <textarea
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="ここにテキストを貼り付けてください"
-          className="mt-4 h-64 w-full rounded-md border border-gray-300 bg-white p-3 font-mono text-xs leading-relaxed outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-        />
-      </section>
-      {/* 操作 */}
-      <section className="mb-6 rounded-lg border bg-white p-4 shadow-sm md:p-6">
-        <h2 className="text-lg font-semibold text-gray-800">変換</h2>
+          <textarea
+            value={output}
+            onChange={(e) => setOutput(e.target.value)}
+            placeholder="変換結果がここに表示されます"
+            className="w-full h-64 p-4 bg-white/[0.02] border border-white/10 rounded-md font-mono text-sm leading-relaxed text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-500"
+          />
 
-        <div className="mt-3 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-          <div className="flex flex-col gap-2">
-            <label className="text-xs font-semibold text-gray-700">
-              変換先
-            </label>
-            <select
-              value={target}
-              onChange={(e) => setTarget(e.target.value as any)}
-              className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 md:w-64"
-            >
-              <option value="LF">LF（Linux/macOS）</option>
-              <option value="CRLF">CRLF（Windows）</option>
-              <option value="CR">CR（旧Macなど）</option>
-            </select>
-
-            <p className="text-xs text-gray-500">
-              ※ 混在している場合も、選んだ形式に統一して出力します。
-            </p>
-          </div>
-
-          <div className="flex items-center justify-end gap-2">
-            <button
-              type="button"
-              onClick={handleConvert}
-              className="rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
-            >
-              変換
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setInput("");
-                setOutput("");
-              }}
-              className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50"
-            >
-              クリア
-            </button>
-          </div>
-        </div>
-      </section>
-      {/* 出力カード */}
-      <section className="rounded-lg border bg-white p-4 shadow-sm md:p-6">
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <h2 className="text-lg font-semibold text-gray-800">出力</h2>
-            <span
-              className={`rounded-full px-3 py-1 text-xs font-semibold ${badgeColor(
-                outputInfo.kind
-              )}`}
-            >
-              {kindLabel(outputInfo.kind)}
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <CopyButton text={output} />
-
-            <button
-              type="button"
-              onClick={downloadAsTxt}
-              disabled={!output}
-              className="rounded-md border border-gray-300 bg-white px-3 py-1 text-[11px] font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-50"
-            >
-              .txt ダウンロード
-            </button>
-
-            <button
-              type="button"
-              onClick={handleSwap}
-              className="rounded-md border border-gray-300 bg-white px-3 py-1 text-[11px] font-semibold text-gray-700 hover:bg-gray-50"
-              disabled={!output}
-              title="出力を入力に戻す"
-            >
-              出力を入力へ
-            </button>
-          </div>
-        </div>
-
-        <textarea
-          value={output}
-          onChange={(e) => setOutput(e.target.value)}
-          placeholder="変換結果がここに表示されます"
-          className="mt-4 h-64 w-full rounded-md border border-gray-300 bg-gray-50 p-3 font-mono text-xs leading-relaxed outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-        />
-
-        <p className="mt-3 text-xs text-gray-500">
-          ※ 出力欄も編集できます（追加修正してからコピーする用途）。
-        </p>
-      </section>
+          <p className="mt-4 text-sm text-zinc-500">
+            ※ 出力欄も編集できます（追加修正してからコピーする用途）。
+          </p>
+        </section>
+      </div>
     </div>
   );
 }
