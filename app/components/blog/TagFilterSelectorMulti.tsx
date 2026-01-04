@@ -25,14 +25,12 @@ export default function TagFilterSelectorMulti({
   const ref = useRef<HTMLDivElement | null>(null);
   const [open, setOpen] = useState(false);
 
-  // 開いている間の操作用（ローカル）
   const [localTags, setLocalTags] = useState<string[]>(selectedTags);
   const [localMode, setLocalMode] = useState<Mode>(mode);
 
   useEffect(() => setLocalTags(selectedTags), [selectedTags]);
   useEffect(() => setLocalMode(mode), [mode]);
 
-  // 外クリックで閉じる
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (!ref.current || ref.current.contains(e.target as Node)) return;
@@ -75,35 +73,39 @@ export default function TagFilterSelectorMulti({
       : `${selectedTags.join(" / ")}（${selectedTags.length}件）`;
 
   return (
-    <div ref={ref} className="relative">
-      {/* トリガ（横幅あり） */}
+    <div ref={ref} className="relative w-full">
+      {/* トリガ：スマホは w-full、md以上でだけ広めに */}
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
         className="
-          inline-flex items-center gap-2
+          inline-flex flex-1 w-full max-w-full min-w-0 overflow-hidden
+          items-center gap-2
           h-8 rounded-md px-2.5
           border border-white/10 bg-white/[0.02]
           text-[12px] font-semibold text-zinc-300
           hover:bg-white/[0.05] transition
-          min-w-[360px]
+          md:w-[360px]
         "
       >
-        <span className="text-zinc-400">技術タグ：</span>
+        <span className="text-zinc-400 shrink-0">技術タグ：</span>
         <span className="min-w-0 flex-1 truncate text-left text-zinc-100">
           {label}
         </span>
         {selectedTags.length > 0 && (
-          <span className="text-zinc-500">{mode === "and" ? "AND" : "OR"}</span>
+          <span className="text-zinc-500 shrink-0">
+            {mode === "and" ? "AND" : "OR"}
+          </span>
         )}
-        <span className="text-zinc-600">▾</span>
+        <span className="text-zinc-600 shrink-0">▾</span>
       </button>
 
-      {/* ドロップダウン */}
+      {/* ドロップダウン：最大560px、でも画面からはみ出さない */}
       {open && (
         <div
           className="
-            absolute z-50 mt-2 w-[560px]
+            absolute left-0 z-50 mt-2
+            w-[min(560px,calc(100vw-24px))]
             rounded-lg border border-white/10
             bg-zinc-950/60 backdrop-blur
             overflow-hidden
@@ -119,7 +121,7 @@ export default function TagFilterSelectorMulti({
             </div>
           </div>
 
-          {/* モード切替（OR / AND） */}
+          {/* モード切替 */}
           <div className="flex items-center gap-2 px-3 py-2 border-b border-white/10">
             <span className="text-[12px] text-zinc-500">条件</span>
 
@@ -156,7 +158,7 @@ export default function TagFilterSelectorMulti({
             </div>
           </div>
 
-          {/* タグ一覧：グリッドで横幅あり */}
+          {/* タグ一覧：スマホは2列、sm以上で3列 */}
           <div className="max-h-[340px] overflow-auto p-3">
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {tags.map((t) => {

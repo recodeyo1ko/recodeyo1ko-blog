@@ -64,6 +64,7 @@ export default async function Sidebar() {
     <SidebarTree
       title="仕事を頑張るために"
       homeHref="/"
+      blogHref="/blogs"
       authorName="recodeyo1ko"
       categoryTree={categoryTree}
       toolGroups={toolGroups}

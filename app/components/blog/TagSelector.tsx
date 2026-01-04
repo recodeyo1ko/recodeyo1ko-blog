@@ -33,26 +33,28 @@ export default function TagSelector({
     <details ref={detailsRef} className="relative">
       <summary
         className="
-          list-none cursor-pointer select-none
-          inline-flex items-center gap-2
-          h-7 rounded-md px-2.5
-          border border-white/10 bg-white/[0.02]
-          text-[12px] font-semibold text-zinc-300
-          hover:bg-white/[0.05] transition
-        "
+    list-none cursor-pointer select-none
+    inline-flex w-full max-w-full min-w-0 overflow-hidden
+    items-center gap-2
+    h-7 rounded-md px-2.5
+    border border-white/10 bg-white/[0.02]
+    text-[12px] font-semibold text-zinc-300
+    hover:bg-white/[0.05] transition
+    sm:w-auto
+  "
       >
-        <span className="text-zinc-400">技術タグ：</span>
-        {selectedTag ? (
-          <span className="text-zinc-100">{selectedTag}</span>
-        ) : (
-          <span className="text-zinc-300">指定なし</span>
-        )}
-        <span className="text-zinc-600">▾</span>
+        <span className="text-zinc-400 shrink-0">技術タグ：</span>
+
+        <span className="min-w-0 flex-1 truncate text-left text-zinc-100">
+          {selectedTag ? selectedTag : "指定なし"}
+        </span>
+
+        <span className="text-zinc-600 shrink-0">▾</span>
       </summary>
 
       <div
         className="
-          absolute z-20 mt-2 w-[260px]
+          absolute z-20 mt-2 w-[min(260px,calc(100vw-24px))]
           rounded-lg border border-white/10
           bg-zinc-950/60 backdrop-blur
           overflow-hidden
