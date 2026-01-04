@@ -94,7 +94,6 @@ const CategoryPage = async ({
         </h1>
         <p className="mt-2 text-center text-sm text-zinc-500">カテゴリー</p>
 
-        {/* ✅ スマホ用：タイトル直下に「ジャンル + 技術タグ」 */}
         <div className="mt-4 md:hidden">
           <div className="rounded-lg border border-white/10 bg-white/[0.02] p-3">
             <div className="flex items-center justify-between gap-2">
@@ -140,7 +139,6 @@ const CategoryPage = async ({
       </header>
 
       <div className="mt-4 rounded-lg border border-white/10 bg-white/[0.02]">
-        {/* ✅ md以上だけ：従来のツールバー */}
         <div className="hidden md:flex relative z-30 flex-wrap items-start gap-2 px-3 sm:px-4 py-2 border-b border-white/10">
           <span className="text-[12px] text-zinc-500 mt-1">絞り込み</span>
 

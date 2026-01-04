@@ -2,21 +2,17 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import FilterSelectorMulti from "./FilterSelectorMulti";
 
 type Mode = "or" | "and";
-
-type Item = {
-  id?: string;
-  name: string;
-};
+type Item = { id?: string; name: string };
 
 export default function CategoryTagFilterClient({
-  basePath, // "/blogs"
+  basePath,
   categories,
   tags,
-  selectedCategory, // "" or name
+  selectedCategory,
   selectedTags,
   mode,
   categoryCounts,
@@ -37,29 +33,31 @@ export default function CategoryTagFilterClient({
 }) {
   const router = useRouter();
 
-  // ✅ UI用ローカル（このコンポーネント内で編集→適用でURLへ）
   const [localCategory, setLocalCategory] = useState<string[]>(
     selectedCategory ? [selectedCategory] : []
   );
   const [localTags, setLocalTags] = useState<string[]>(selectedTags);
   const [localMode, setLocalMode] = useState<Mode>(mode);
 
-  // props更新に追従（戻る/進む、外部リンクなど）
-  useMemo(() => {
+  // props更新に追従（戻る/進む、直リンク）
+  useEffect(() => {
     setLocalCategory(selectedCategory ? [selectedCategory] : []);
+  }, [selectedCategory]);
+
+  useEffect(() => {
     setLocalTags(selectedTags);
+  }, [selectedTags.join(",")]);
+
+  useEffect(() => {
     setLocalMode(mode);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCategory, selectedTags.join(","), mode]);
+  }, [mode]);
 
   const buildUrl = useCallback(
-    (category: string, tags: string[], m: Mode) => {
+    (category: string, tgs: string[], m: Mode) => {
       const sp = new URLSearchParams();
-
       if (category) sp.set("category", category);
-      if (tags.length > 0) sp.set("tags", tags.join(","));
-      if (tags.length > 0) sp.set("mode", m); // tagsがある時だけ付与でOK
-
+      if (tgs.length > 0) sp.set("tags", tgs.join(","));
+      if (tgs.length > 0) sp.set("mode", m);
       const q = sp.toString();
       return q ? `${basePath}?${q}` : basePath;
     },
@@ -68,8 +66,7 @@ export default function CategoryTagFilterClient({
 
   const applyAll = () => {
     const cat = localCategory[0] ?? "";
-    const url = buildUrl(cat, localTags, localMode);
-    router.push(url);
+    router.push(buildUrl(cat, localTags, localMode));
   };
 
   const clearAll = () => {
@@ -82,73 +79,108 @@ export default function CategoryTagFilterClient({
   const hasAny = selectedCategory !== "" || selectedTags.length > 0;
 
   return (
-    <div className="flex flex-wrap items-start gap-2">
-      <span className="text-[12px] text-zinc-500 mt-1">絞り込み</span>
+    <div className="relative z-30">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:gap-2">
+        <div className="text-[12px] text-zinc-500 mt-1 shrink-0">絞り込み</div>
 
-      {/* ✅ カテゴリ：単一選択にしたいので selected は配列だが 0/1 で扱う */}
-      <div className="w-full min-w-0 sm:w-auto">
-        <FilterSelectorMulti
-          label="カテゴリ"
-          items={categories}
-          selected={localCategory}
-          counts={categoryCounts}
-          totalCount={totalCount}
-          mode={localMode}
-          modeEnabled={false}
-          onChangeSelected={(next) => {
-            // カテゴリは単一選択（最後に押したものを採用）
-            const one = next.length > 0 ? [next[next.length - 1]] : [];
-            setLocalCategory(one);
-          }}
-          widthClass="w-full sm:w-[340px]"
-        />
-      </div>
+        <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-2 min-w-0 flex-1">
+          <div className="min-w-0">
+            <FilterSelectorMulti
+              label="カテゴリ"
+              items={categories}
+              selected={localCategory}
+              counts={categoryCounts}
+              totalCount={totalCount}
+              mode={localMode}
+              modeEnabled={false}
+              onChangeSelected={(next) => {
+                const one = next.length > 0 ? [next[next.length - 1]] : [];
+                setLocalCategory(one);
+              }}
+              widthClass="w-full max-w-[420px] md:max-w-[520px] lg:max-w-[560px]"
+            />
+          </div>
 
-      <div className="w-full min-w-0 sm:w-auto">
-        <FilterSelectorMulti
-          label="技術タグ"
-          items={tags}
-          selected={localTags}
-          counts={tagCounts}
-          totalCount={totalCount}
-          mode={localMode}
-          modeEnabled={true}
-          onChangeSelected={(next) => setLocalTags(next)}
-          onChangeMode={(m) => setLocalMode(m)}
-          widthClass="w-full sm:w-[520px]"
-        />
-      </div>
-
-      <div className="ml-auto flex items-center gap-2">
-        <div className="text-[12px] text-zinc-500">
-          表示：<span className="text-zinc-300">{filteredCount}</span> 件
+          <div className="min-w-0">
+            <FilterSelectorMulti
+              label="技術タグ"
+              items={tags}
+              selected={localTags}
+              counts={tagCounts}
+              totalCount={totalCount}
+              mode={localMode}
+              modeEnabled={true}
+              onChangeSelected={setLocalTags}
+              onChangeMode={setLocalMode}
+              widthClass="w-full max-w-[420px] md:max-w-[520px] lg:max-w-[560px]"
+            />
+          </div>
         </div>
 
-        {hasAny ? (
-          <Link
-            href={basePath}
-            onClick={(e) => {
-              e.preventDefault();
-              clearAll();
-            }}
+        <div className="hidden sm:flex items-center gap-2 shrink-0">
+          <div className="text-[12px] text-zinc-500">
+            表示：<span className="text-zinc-300">{filteredCount}</span> 件
+          </div>
+
+          {hasAny ? (
+            <button
+              type="button"
+              onClick={clearAll}
+              className="
+                h-8 inline-flex items-center rounded-md px-2.5
+                border border-white/10 bg-white/[0.02]
+                text-[12px] font-semibold text-zinc-300
+                hover:bg-white/[0.05] transition
+              "
+            >
+              全解除
+            </button>
+          ) : null}
+
+          <button
+            type="button"
+            onClick={applyAll}
             className="
               h-8 inline-flex items-center rounded-md px-2.5
               border border-white/10 bg-white/[0.02]
-              text-[12px] font-semibold text-zinc-300
+              text-[12px] font-semibold text-zinc-100
               hover:bg-white/[0.05] transition
             "
           >
-            全解除
-          </Link>
-        ) : null}
+            適用
+          </button>
+        </div>
+      </div>
+
+      <div className="mt-2 flex flex-col gap-2 sm:hidden">
+        <div className="flex items-center justify-between">
+          <div className="text-[12px] text-zinc-500">
+            表示：<span className="text-zinc-300">{filteredCount}</span> 件
+          </div>
+
+          {hasAny ? (
+            <Link
+              href={basePath}
+              onClick={(e) => {
+                e.preventDefault();
+                clearAll();
+              }}
+              className="text-[12px] text-zinc-300 hover:text-zinc-100"
+            >
+              全解除
+            </Link>
+          ) : (
+            <span />
+          )}
+        </div>
 
         <button
           type="button"
           onClick={applyAll}
           className="
-            h-8 inline-flex items-center rounded-md px-2.5
+            h-9 w-full rounded-md
             border border-white/10 bg-white/[0.02]
-            text-[12px] font-semibold text-zinc-100
+            text-[13px] font-semibold text-zinc-100
             hover:bg-white/[0.05] transition
           "
         >

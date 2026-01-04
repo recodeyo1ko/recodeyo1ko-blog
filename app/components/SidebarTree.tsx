@@ -23,7 +23,6 @@ const row =
   "group flex items-center gap-2 rounded-md px-2 py-1.5 text-sm " +
   "text-zinc-100 hover:bg-white/[0.06] active:bg-white/10 transition-colors select-none";
 
-// ✅ トグル+📁の2アイコン分を入れられるように幅を広げる（ここ重要）
 const icon = "w-8 shrink-0 text-zinc-400 group-hover:text-zinc-200";
 
 const sectionLabel =
@@ -180,7 +179,6 @@ export default function SidebarTree({
 
             return (
               <div key={category.id} className="space-y-1">
-                {/* ✅ カテゴリは「リンクなし」1行トグルに統一 */}
                 <RowButton
                   onClick={() =>
                     setOpen((p) => ({ ...p, [category.id]: !isOpen }))
