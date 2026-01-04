@@ -1,109 +1,159 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import Blog from "./Blog";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useCallback, useMemo, useState } from "react";
+import FilterSelectorMulti from "./FilterSelectorMulti";
 
-type Tag = { id: string; name: string };
-type BlogType = {
-  id: string;
-  title: string;
-  category?: { name?: string } | null;
-  tags?: Tag[] | null;
+type Mode = "or" | "and";
+
+type Item = {
+  id?: string;
+  name: string;
 };
 
 export default function CategoryTagFilterClient({
-  blogs,
+  basePath, // "/blogs"
+  categories,
+  tags,
+  selectedCategory, // "" or name
+  selectedTags,
+  mode,
+  categoryCounts,
+  tagCounts,
+  totalCount,
+  filteredCount,
 }: {
-  blogs: BlogType[];
+  basePath: string;
+  categories: Item[];
+  tags: Item[];
+  selectedCategory: string;
+  selectedTags: string[];
+  mode: Mode;
+  categoryCounts: Record<string, number>;
+  tagCounts: Record<string, number>;
+  totalCount: number;
+  filteredCount: number;
 }) {
-  const [selectedTag, setSelectedTag] = useState<string>("");
+  const router = useRouter();
 
-  /** カテゴリ内に存在するタグ一覧 */
-  const tags = useMemo(() => {
-    const map = new Map<string, Tag>();
-    blogs.forEach((b) =>
-      b.tags?.forEach((t) => {
-        if (!map.has(t.id)) map.set(t.id, t);
-      })
-    );
-    return Array.from(map.values()).sort((a, b) =>
-      a.name.localeCompare(b.name, "ja")
-    );
-  }, [blogs]);
+  // ✅ UI用ローカル（このコンポーネント内で編集→適用でURLへ）
+  const [localCategory, setLocalCategory] = useState<string[]>(
+    selectedCategory ? [selectedCategory] : []
+  );
+  const [localTags, setLocalTags] = useState<string[]>(selectedTags);
+  const [localMode, setLocalMode] = useState<Mode>(mode);
 
-  /** タグで絞り込んだ Blog */
-  const filteredBlogs = useMemo(() => {
-    if (!selectedTag) return blogs;
-    return blogs.filter((b) => b.tags?.some((t) => t.name === selectedTag));
-  }, [blogs, selectedTag]);
+  // props更新に追従（戻る/進む、外部リンクなど）
+  useMemo(() => {
+    setLocalCategory(selectedCategory ? [selectedCategory] : []);
+    setLocalTags(selectedTags);
+    setLocalMode(mode);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCategory, selectedTags.join(","), mode]);
+
+  const buildUrl = useCallback(
+    (category: string, tags: string[], m: Mode) => {
+      const sp = new URLSearchParams();
+
+      if (category) sp.set("category", category);
+      if (tags.length > 0) sp.set("tags", tags.join(","));
+      if (tags.length > 0) sp.set("mode", m); // tagsがある時だけ付与でOK
+
+      const q = sp.toString();
+      return q ? `${basePath}?${q}` : basePath;
+    },
+    [basePath]
+  );
+
+  const applyAll = () => {
+    const cat = localCategory[0] ?? "";
+    const url = buildUrl(cat, localTags, localMode);
+    router.push(url);
+  };
+
+  const clearAll = () => {
+    setLocalCategory([]);
+    setLocalTags([]);
+    setLocalMode("or");
+    router.push(basePath);
+  };
+
+  const hasAny = selectedCategory !== "" || selectedTags.length > 0;
 
   return (
-    <div className="mt-4">
-      {/* Notion風 フィルタツールバー */}
-      <div className="rounded-lg border border-white/10 bg-white/[0.02]">
-        <div className="flex items-center gap-2 px-3 py-2 border-b border-white/10">
-          <span className="text-xs text-zinc-500">絞り込み</span>
+    <div className="flex flex-wrap items-start gap-2">
+      <span className="text-[12px] text-zinc-500 mt-1">絞り込み</span>
 
-          <div className="flex items-center gap-1.5 overflow-x-auto">
-            <button
-              onClick={() => setSelectedTag("")}
-              className={`
-                h-7 px-2.5 rounded-md text-xs font-semibold
-                border border-white/10
-                ${selectedTag === "" ? "bg-white/[0.05]" : "bg-white/[0.02]"}
-                hover:bg-white/[0.05]
-                text-zinc-300 transition
-              `}
-            >
-              すべて
-            </button>
+      {/* ✅ カテゴリ：単一選択にしたいので selected は配列だが 0/1 で扱う */}
+      <div className="w-full min-w-0 sm:w-auto">
+        <FilterSelectorMulti
+          label="カテゴリ"
+          items={categories}
+          selected={localCategory}
+          counts={categoryCounts}
+          totalCount={totalCount}
+          mode={localMode}
+          modeEnabled={false}
+          onChangeSelected={(next) => {
+            // カテゴリは単一選択（最後に押したものを採用）
+            const one = next.length > 0 ? [next[next.length - 1]] : [];
+            setLocalCategory(one);
+          }}
+          widthClass="w-full sm:w-[340px]"
+        />
+      </div>
 
-            {tags.map((tag) => (
-              <button
-                key={tag.id}
-                onClick={() => setSelectedTag(tag.name)}
-                className={`
-                  h-7 px-2.5 rounded-md text-xs font-semibold
-                  border border-white/10
-                  ${
-                    selectedTag === tag.name
-                      ? "bg-white/[0.05]"
-                      : "bg-white/[0.02]"
-                  }
-                  hover:bg-white/[0.05]
-                  text-zinc-300 transition
-                `}
-              >
-                {tag.name}
-              </button>
-            ))}
-          </div>
+      <div className="w-full min-w-0 sm:w-auto">
+        <FilterSelectorMulti
+          label="技術タグ"
+          items={tags}
+          selected={localTags}
+          counts={tagCounts}
+          totalCount={totalCount}
+          mode={localMode}
+          modeEnabled={true}
+          onChangeSelected={(next) => setLocalTags(next)}
+          onChangeMode={(m) => setLocalMode(m)}
+          widthClass="w-full sm:w-[520px]"
+        />
+      </div>
 
-          <div className="ml-auto text-xs text-zinc-500">
-            {selectedTag ? `選択：${selectedTag}` : "選択：すべて"}
-          </div>
+      <div className="ml-auto flex items-center gap-2">
+        <div className="text-[12px] text-zinc-500">
+          表示：<span className="text-zinc-300">{filteredCount}</span> 件
         </div>
 
-        {/* Blog 行（テーブルヘッダなし） */}
-        {filteredBlogs.length === 0 ? (
-          <div className="px-4 py-6 text-sm text-zinc-500">
-            該当する記事がありません
-          </div>
-        ) : (
-          <table className="w-full border-collapse">
-            <tbody>
-              {filteredBlogs.map((blog) => (
-                <Blog
-                  key={blog.id}
-                  id={blog.id}
-                  title={blog.title}
-                  category={blog.category}
-                  tags={blog.tags}
-                />
-              ))}
-            </tbody>
-          </table>
-        )}
+        {hasAny ? (
+          <Link
+            href={basePath}
+            onClick={(e) => {
+              e.preventDefault();
+              clearAll();
+            }}
+            className="
+              h-8 inline-flex items-center rounded-md px-2.5
+              border border-white/10 bg-white/[0.02]
+              text-[12px] font-semibold text-zinc-300
+              hover:bg-white/[0.05] transition
+            "
+          >
+            全解除
+          </Link>
+        ) : null}
+
+        <button
+          type="button"
+          onClick={applyAll}
+          className="
+            h-8 inline-flex items-center rounded-md px-2.5
+            border border-white/10 bg-white/[0.02]
+            text-[12px] font-semibold text-zinc-100
+            hover:bg-white/[0.05] transition
+          "
+        >
+          適用
+        </button>
       </div>
     </div>
   );

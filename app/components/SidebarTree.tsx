@@ -18,6 +18,18 @@ type Props = {
   toolGroups: ToolGroup[];
 };
 
+// 行（Notion風）
+const row =
+  "group flex items-center gap-2 rounded-md px-2 py-1.5 text-sm " +
+  "text-zinc-100 hover:bg-white/[0.06] active:bg-white/10 transition-colors select-none";
+
+// ✅ トグル+📁の2アイコン分を入れられるように幅を広げる（ここ重要）
+const icon = "w-8 shrink-0 text-zinc-400 group-hover:text-zinc-200";
+
+const sectionLabel =
+  "px-2 mt-4 mb-2 text-[11px] font-semibold tracking-wider text-zinc-500";
+
+// 大大項目（目立たせたい）
 const topRow =
   "group flex items-center gap-2 rounded-md px-2 py-2 text-sm " +
   "text-zinc-100 hover:bg-white/[0.07] active:bg-white/10 transition-colors select-none";
@@ -27,15 +39,6 @@ const topIcon = "w-5 shrink-0 text-zinc-300 group-hover:text-zinc-100";
 const topBadge =
   "ml-auto text-[10px] px-1.5 py-0.5 rounded-md border border-white/10 " +
   "bg-white/[0.02] text-zinc-500 group-hover:text-zinc-400";
-
-const row =
-  "group flex items-center gap-2 rounded-md px-2 py-1.5 text-sm " +
-  "text-zinc-100 hover:bg-white/[0.06] active:bg-white/10 transition-colors select-none";
-
-const icon = "w-8 shrink-0 text-zinc-400 group-hover:text-zinc-200";
-
-const sectionLabel =
-  "px-2 mt-4 mb-2 text-[11px] font-semibold tracking-wider text-zinc-500";
 
 function TopLink({
   href,
@@ -91,12 +94,14 @@ function RowButton({
   label,
   title,
   indent = 0,
+  ariaExpanded,
 }: {
   onClick: () => void;
   iconNode: React.ReactNode;
   label: string;
   title?: string;
   indent?: number;
+  ariaExpanded?: boolean;
 }) {
   return (
     <button
@@ -105,6 +110,7 @@ function RowButton({
       title={title ?? label}
       className={`${row} w-full text-left`}
       style={{ marginLeft: indent }}
+      aria-expanded={ariaExpanded}
     >
       <span className={icon}>{iconNode}</span>
       <span className="min-w-0 flex-1 truncate">{label}</span>
@@ -112,10 +118,15 @@ function RowButton({
   );
 }
 
-// ▾/▸ の幅を固定して “文字かぶり” を防ぐ
-const chevron = (open: boolean) => (
-  <span aria-hidden className="w-3 text-center">
-    {open ? "▾" : "▸"}
+// ▾/▸ + 📁 を “確実にスペース確保” して表示する
+const toggleFolderIcon = (open: boolean) => (
+  <span className="inline-flex items-center gap-1">
+    <span aria-hidden className="inline-flex w-3 justify-center">
+      {open ? "▾" : "▸"}
+    </span>
+    <span aria-hidden className="inline-flex w-4 justify-center">
+      📁
+    </span>
   </span>
 );
 
@@ -127,12 +138,14 @@ export default function SidebarTree({
   categoryTree,
   toolGroups,
 }: Props) {
+  // カテゴリ：デフォルト開く（今まで通り）
   const [open, setOpen] = useState<Record<string, boolean>>(() => {
     const initial: Record<string, boolean> = {};
     for (const node of categoryTree) initial[node.category.id] = true;
     return initial;
   });
 
+  // 便利ツール：デフォルト閉じる（あなたの要件）
   const [toolOpen, setToolOpen] = useState<Record<string, boolean>>(() => {
     const initial: Record<string, boolean> = {};
     for (const g of toolGroups) initial[g.title] = false;
@@ -140,7 +153,7 @@ export default function SidebarTree({
   });
 
   return (
-    <div className="px-3 py-4 text-zinc-100 flex flex-col bg-transparent">
+    <div className="h-full px-3 py-4 text-zinc-100 flex flex-col bg-transparent">
       {/* タイトル */}
       <div className="px-2">
         <div className="text-sm font-semibold text-zinc-100 truncate">
@@ -149,13 +162,16 @@ export default function SidebarTree({
         <div className="mt-5 border-t border-white/10" />
       </div>
 
-      {/* Home */}
-      <div className="mt-3">
+      {/* 大大項目（Notionっぽく目立たせる） */}
+      <div className="mt-3 space-y-1">
         <TopLink href={homeHref} iconNode="⌂" label="Home" hint="TOP" />
       </div>
-      {/* 中央：スクロール */}
-      <div className="pr-1 mt-2 border-t border-white/5">
-        {/* BLOG（大大項目） */}
+
+      {/* 中央 */}
+      <div className="mt-4 border-t border-white/10" />
+
+      <div className="mt-2">
+        {/* BLOG：カテゴリ → タグ */}
         <TopLink href={blogHref} iconNode="≡" label="ブログ" hint="BLOG" />
 
         <div className="space-y-1">
@@ -164,33 +180,18 @@ export default function SidebarTree({
 
             return (
               <div key={category.id} className="space-y-1">
-                {/*  1行の中で “トグル + 📁 + カテゴリ名” を揃える */}
-                <div className="flex items-center gap-1">
-                  {/* トグル（幅固定・Rowと同じ見た目） */}
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setOpen((p) => ({ ...p, [category.id]: !isOpen }))
-                    }
-                    className={`${row} px-2`}
-                    title={isOpen ? "閉じる" : "開く"}
-                    aria-label="toggle category"
-                  >
-                    <span className={icon}>{chevron(isOpen)}</span>
-                  </button>
+                {/* ✅ カテゴリは「リンクなし」1行トグルに統一 */}
+                <RowButton
+                  onClick={() =>
+                    setOpen((p) => ({ ...p, [category.id]: !isOpen }))
+                  }
+                  iconNode={toggleFolderIcon(isOpen)}
+                  label={category.name}
+                  title={category.name}
+                  ariaExpanded={isOpen}
+                />
 
-                  {/* カテゴリリンク（RowLink） */}
-                  <div className="min-w-0 flex-1">
-                    <RowLink
-                      href={`/categories/${encodeURIComponent(category.name)}`}
-                      iconNode="📁"
-                      label={category.name}
-                      title={category.name}
-                    />
-                  </div>
-                </div>
-
-                {/* タグ（子） */}
+                {/* タグ（子）：リンクは残す（必要なら /blogs への絞り込みURLにも変更可） */}
                 {isOpen && (
                   <div className="space-y-1 ml-6">
                     {tags.length > 0 ? (
@@ -215,9 +216,8 @@ export default function SidebarTree({
           })}
         </div>
 
-        {/* 便利ツール */}
+        {/* 便利ツール：グループトグル */}
         <div className="mt-6 border-t border-white/5 pt-4">
-          {/*  大大項目：ブログと共通アイコン */}
           <TopLink
             href="/useful_tools"
             iconNode="≡"
@@ -225,41 +225,22 @@ export default function SidebarTree({
             hint="TOOLS"
           />
 
-          <div className="mt-2 space-y-2">
+          <div className="space-y-2">
             {toolGroups.map((g) => {
               const isOpen = toolOpen[g.title] ?? false;
 
               return (
                 <div key={g.title} className="space-y-1">
-                  {/* ✅ ひとまとまり：見出し行クリックで開閉 */}
                   <RowButton
                     onClick={() =>
                       setToolOpen((p) => ({ ...p, [g.title]: !isOpen }))
                     }
-                    iconNode={
-                      <span className="inline-flex items-center gap-1">
-                        {/* トグル：幅固定 */}
-                        <span
-                          aria-hidden
-                          className="inline-flex w-3 justify-center text-zinc-400"
-                        >
-                          {isOpen ? "▾" : "▸"}
-                        </span>
-
-                        {/* フォルダ：幅固定 */}
-                        <span
-                          aria-hidden
-                          className="inline-flex w-4 justify-center text-zinc-400"
-                        >
-                          📁
-                        </span>
-                      </span>
-                    }
+                    iconNode={toggleFolderIcon(isOpen)}
                     label={g.title}
                     title={g.title}
+                    ariaExpanded={isOpen}
                   />
 
-                  {/* ✅ 子要素（ツール） */}
                   {isOpen && (
                     <div className="space-y-1 ml-6">
                       {g.items.map((t) => (
@@ -280,7 +261,7 @@ export default function SidebarTree({
         </div>
       </div>
 
-      {/* 署名 */}
+      {/* 署名：ページ最下部に固定（サイドバー自体はスクロールしない前提） */}
       <div className="mt-auto pt-3 px-2 border-t border-white/5">
         <div className="text-xs text-zinc-500">@ {authorName}</div>
       </div>
