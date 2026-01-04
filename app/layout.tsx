@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Sidebar from "@/app/components/Sidebar";
+import ResponsiveSidebar from "@/app/components/ResponsiveSidebar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,29 +22,27 @@ export default function RootLayout({
         className={`${inter.className} bg-app-bg text-zinc-200 antialiased`}
       >
         <div className="min-h-screen">
-          <div className="flex">
-            <aside className="hidden lg:block w-64 fixed inset-y-0 left-0 z-40 border-r border-white/10 bg-white/[0.02]">
-              <div className="h-full overflow-y-auto">
-                <Sidebar />
-              </div>
-            </aside>
+          {/* ✅ md未満は縦（上にメニューバー）、md以上は横並び */}
+          <div className="flex flex-col md:flex-row min-h-screen">
+            <ResponsiveSidebar>
+              <Sidebar />
+            </ResponsiveSidebar>
 
-            <div className="flex-1 lg:pl-64">
-              <main
-                className="
-                    mx-auto w-full
-                    max-w-5xl
-                    xl:max-w-6xl
-                    2xl:max-w-7xl
-                    px-4 sm:px-8 lg:px-10
-                    py-6 sm:py-10
-                  "
-              >
-                <div className="rounded-lg border border-white/10 bg-white/[0.02]">
-                  <div className="p-6 sm:p-8">{children}</div>
-                </div>
-              </main>
-            </div>
+            <main
+              className="
+                flex-1
+                mx-auto w-full
+                max-w-5xl
+                xl:max-w-6xl
+                2xl:max-w-7xl
+                px-4 sm:px-8 md:px-8
+                py-6 sm:py-10
+              "
+            >
+              <div className="rounded-lg border border-white/10 bg-white/[0.02]">
+                <div className="p-6 sm:p-8">{children}</div>
+              </div>
+            </main>
           </div>
         </div>
       </body>
