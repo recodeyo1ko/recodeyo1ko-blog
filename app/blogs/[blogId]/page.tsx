@@ -3,7 +3,6 @@ import { getDetail, getList } from "../../libs/microcms";
 import markdownHtml from "zenn-markdown-html";
 import { load } from "cheerio";
 import hljs from "highlight.js";
-import "highlight.js/styles/night-owl.css";
 import Link from "next/link";
 
 export async function generateStaticParams() {
