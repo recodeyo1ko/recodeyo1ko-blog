@@ -32,7 +32,7 @@ function adaptToolGroups(groups: UsefulToolGroup[]): SidebarToolGroup[] {
 }
 
 export default async function Sidebar() {
-  const { contents } = await getList();
+  const { contents } = await getList({ limit: 80 });
   const blogs = contents as Blog[];
 
   // categoryName -> { category, tagsMap }

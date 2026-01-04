@@ -2,7 +2,7 @@ import Blog from "../../components/blog/Blog";
 import { getList } from "../../libs/microcms";
 
 const fetchBlogsByTag = async (tagName: string) => {
-  const { contents } = await getList();
+  const { contents } = await getList({ limit: 80 });
   return contents.filter((blog: any) =>
     blog.tags?.some((tag: any) => tag.name === tagName)
   );

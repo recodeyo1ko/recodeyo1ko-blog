@@ -114,7 +114,7 @@ export default async function BlogPage({
     mode?: string | string[];
   };
 }) {
-  const { contents } = await getList();
+  const { contents } = await getList({ limit: 80 });
   const allBlogs = (contents ?? []) as any[];
 
   if (!allBlogs || allBlogs.length === 0) {
