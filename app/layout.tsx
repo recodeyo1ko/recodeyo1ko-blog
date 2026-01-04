@@ -22,8 +22,7 @@ export default function RootLayout({
         className={`${inter.className} bg-app-bg text-zinc-200 antialiased`}
       >
         <div className="min-h-screen">
-          {/* ✅ md未満は縦（上にメニューバー）、md以上は横並び */}
-          <div className="flex flex-col md:flex-row min-h-screen">
+          <div className="flex flex-col md:flex-row">
             <ResponsiveSidebar>
               <Sidebar />
             </ResponsiveSidebar>
@@ -32,10 +31,9 @@ export default function RootLayout({
               className="
                 flex-1
                 mx-auto w-full
-                max-w-5xl
-                xl:max-w-6xl
+                max-w-6xl
                 2xl:max-w-7xl
-                px-4 sm:px-8 md:px-8
+                px-4 sm:px-8 md:px-10
                 py-6 sm:py-10
               "
             >

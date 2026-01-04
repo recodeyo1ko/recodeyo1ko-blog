@@ -93,45 +93,88 @@ const CategoryPage = async ({
           {decodedCategory}
         </h1>
         <p className="mt-2 text-center text-sm text-zinc-500">カテゴリー</p>
+
+        <div className="mt-4 md:hidden">
+          <div className="rounded-lg border border-white/10 bg-white/[0.02] p-3">
+            <div className="flex items-center justify-between gap-2">
+              <div className="text-[12px] text-zinc-500">
+                ジャンル：
+                <span className="text-zinc-200">{decodedCategory}</span>
+              </div>
+              <div className="text-[12px] text-zinc-500">
+                表示：<span className="text-zinc-300">{blogs.length}</span> 件
+              </div>
+            </div>
+
+            <div className="mt-2">
+              <TagFilterSelectorMulti
+                basePath={`/categories/${encodeURIComponent(decodedCategory)}`}
+                selectedTags={selectedTags}
+                mode={mode}
+                tags={tags}
+                counts={counts}
+                totalCount={allBlogs.length}
+              />
+            </div>
+
+            {selectedTags.length > 0 && (
+              <div className="mt-2 flex justify-end">
+                <Link
+                  href={`/categories/${encodeURIComponent(decodedCategory)}`}
+                  className="
+                  h-8 inline-flex items-center rounded-md px-2.5
+                  border border-white/10 bg-white/[0.02]
+                  text-[12px] font-semibold text-zinc-300
+                  hover:bg-white/[0.05] transition
+                "
+                >
+                  解除
+                </Link>
+              </div>
+            )}
+          </div>
+        </div>
+
         <div className="mt-4 border-t border-white/10" />
       </header>
 
       <div className="mt-4 rounded-lg border border-white/10 bg-white/[0.02]">
-        {/* ツールバー */}
-        <div className="relative z-30 flex items-center gap-2 px-3 sm:px-4 py-2 border-b border-white/10">
-          <span className="text-[12px] text-zinc-500">絞り込み</span>
+        <div className="hidden md:flex relative z-30 flex-wrap items-start gap-2 px-3 sm:px-4 py-2 border-b border-white/10">
+          <span className="text-[12px] text-zinc-500 mt-1">絞り込み</span>
 
-          <TagFilterSelectorMulti
-            basePath={`/categories/${encodeURIComponent(decodedCategory)}`}
-            selectedTags={selectedTags}
-            mode={mode}
-            tags={tags}
-            counts={counts}
-            totalCount={allBlogs.length}
-          />
-
-          <div className="flex-1" />
-
-          <div className="text-[12px] text-zinc-500">
-            表示：<span className="text-zinc-300">{blogs.length}</span> 件
+          <div className="w-full min-w-0 sm:w-auto">
+            <TagFilterSelectorMulti
+              basePath={`/categories/${encodeURIComponent(decodedCategory)}`}
+              selectedTags={selectedTags}
+              mode={mode}
+              tags={tags}
+              counts={counts}
+              totalCount={allBlogs.length}
+            />
           </div>
 
-          {selectedTags.length > 0 && (
-            <Link
-              href={`/categories/${encodeURIComponent(decodedCategory)}`}
-              className="
+          <div className="ml-auto flex items-center gap-2">
+            <div className="text-[12px] text-zinc-500">
+              表示：<span className="text-zinc-300">{blogs.length}</span> 件
+            </div>
+
+            {selectedTags.length > 0 && (
+              <Link
+                href={`/categories/${encodeURIComponent(decodedCategory)}`}
+                className="
                 h-8 inline-flex items-center rounded-md px-2.5
                 border border-white/10 bg-white/[0.02]
                 text-[12px] font-semibold text-zinc-300
                 hover:bg-white/[0.05] transition
               "
-            >
-              解除
-            </Link>
-          )}
+              >
+                解除
+              </Link>
+            )}
+          </div>
         </div>
 
-        {/* 一覧（theadなし・Blogの<tr>をそのまま） */}
+        {/* 一覧 */}
         {blogs.length === 0 ? (
           <div className="px-4 py-6 text-sm text-zinc-500">
             該当する記事がありません
@@ -139,6 +182,31 @@ const CategoryPage = async ({
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
+              <thead>
+                {/* スマホ：2列 */}
+                <tr className="md:hidden border-b border-white/10 bg-white/[0.01]">
+                  <th className="px-4 py-2 text-left text-[12px] font-semibold text-zinc-500">
+                    タイトル
+                  </th>
+                  <th className="px-4 py-2 text-left text-[12px] font-semibold text-zinc-500">
+                    カテゴリ/タグ名
+                  </th>
+                </tr>
+
+                {/* md以上：3列 */}
+                <tr className="hidden md:table-row border-b border-white/10 bg-white/[0.01]">
+                  <th className="px-4 py-2 text-left text-[12px] font-semibold text-zinc-500">
+                    タイトル
+                  </th>
+                  <th className="px-4 py-2 text-right text-[12px] font-semibold text-zinc-500">
+                    ジャンル
+                  </th>
+                  <th className="px-4 py-2 text-right text-[12px] font-semibold text-zinc-500">
+                    技術タグ
+                  </th>
+                </tr>
+              </thead>
+
               <tbody className="text-sm">
                 {blogs.map((blog: any) => (
                   <Blog
