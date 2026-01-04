@@ -4,9 +4,9 @@
 import { useState } from "react";
 import {
   calcTextStats,
-  diffLines,
+  diffChars,
   TextStats,
-  DiffLine,
+  CharDiffResult,
 } from "./_components/diffUtils";
 import TextAreaWithStats from "./_components/TextAreaWithStats";
 import DiffViewer from "./_components/DiffViewer";
@@ -23,29 +23,28 @@ export default function DiffToolPage() {
     calcTextStats("")
   );
 
-  const [diffLinesState, setDiffLinesState] = useState<DiffLine[]>([]);
+  const [diffResult, setDiffResult] = useState<CharDiffResult | null>(null);
 
   const handleCompare = () => {
-    const diff = diffLines(beforeText, afterText);
-    setDiffLinesState(diff);
+    setDiffResult(diffChars(beforeText, afterText));
   };
 
   return (
     <div className="min-h-screen bg-zinc-900">
       <div className="mx-auto max-w-5xl px-6 py-12">
         <ToolHeader
-          title="差分チェッカー"
-          description="2つのテキストの差分を行単位で比較・表示します。変更箇所が一目でわかるように、追加・削除された行を色分けして表示します。"
+          title="差分チェッカー（文字単位）"
+          description="2つのテキストを文字単位で比較し、異なる箇所だけをハイライトします。"
           stepsVariant="ordered"
           className="mb-12"
           steps={
             <>
               <li>
-                左右のテキストエリアに比較したい2つのテキストを入力または貼り付けます。
+                左右のテキストエリアに比較したいテキストを入力または貼り付けます。
               </li>
               <li>「差分を比較」ボタンをクリックします。</li>
               <li>
-                差分結果が下部に表示され、追加・削除された行が色分けされて確認できます。
+                削除（赤）/追加（緑）として、違う箇所だけがハイライトされます。
               </li>
             </>
           }
@@ -97,9 +96,9 @@ export default function DiffToolPage() {
         {/* 差分ビュー */}
         <section className="bg-white/[0.02] rounded-md p-6 border border-white/10">
           <h2 className="text-2xl font-semibold text-zinc-100 mb-4">
-            差分結果
+            差分結果（文字単位）
           </h2>
-          <DiffViewer lines={diffLinesState} />
+          <DiffViewer result={diffResult} />
         </section>
       </div>
     </div>

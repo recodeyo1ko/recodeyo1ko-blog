@@ -1,7 +1,7 @@
-// app/useful_tools/diffTool/TextAreaWithStats.tsx
+// app/useful_tools/diffTool/_components/TextAreaWithStats.tsx
 "use client";
 
-import { TextStats } from "./diffUtils";
+import type { TextStats } from "./diffUtils";
 
 type Props = {
   label: string;
@@ -22,24 +22,54 @@ export default function TextAreaWithStats({
   stats,
   color = "blue",
 }: Props) {
+  const ring =
+    color === "blue"
+      ? "focus:ring-blue-500/40 focus:border-blue-500/40"
+      : "focus:ring-emerald-500/40 focus:border-emerald-500/40";
+
   return (
-    <div>
-      <h2 className="mb-2 text-sm font-semibold text-zinc-300">{label}</h2>
+    <div className="space-y-3">
+      <div className="flex items-end justify-between gap-4">
+        <h3 className="text-sm font-semibold text-zinc-100">{label}</h3>
+        <div className="text-[11px] text-zinc-400">{statsLabel}</div>
+      </div>
+
       <textarea
-        className="h-64 w-full bg-white/[0.02] border border-white/10 rounded-md p-3 text-sm font-mono text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-500 resize-y"
-        placeholder={placeholder}
         value={value}
+        placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
+        className={`w-full min-h-[200px] rounded-md border border-white/10 bg-zinc-950/40 text-zinc-100 p-3 text-sm font-mono
+        placeholder:text-zinc-500 focus:outline-none focus:ring-2 ${ring}`}
       />
-      <div className="mt-2 rounded-md bg-white/[0.02] border border-white/10 px-3 py-2 text-xs text-zinc-300 hover:bg-white/[0.05]">
-        <div className="font-semibold mb-1">{statsLabel}</div>
-        <div className="flex flex-wrap gap-x-4 gap-y-1">
-          <span>文字数: {stats.charCount}</span>
-          <span>空白数: {stats.spaceCount}</span>
-          <span>空白込み文字数: {stats.charCountWithSpaces}</span>
-          <span>改行数: {stats.newlineCount}</span>
-          <span>改行込み文字数: {stats.charCountWithSpacesAndNewlines}</span>
-          <span>単語数: {stats.wordCount}</span>
+
+      <div className="grid grid-cols-2 gap-2 text-xs text-zinc-300">
+        <div className="rounded-md border border-white/10 bg-white/[0.02] p-2">
+          文字数（空白/改行除く）:{" "}
+          <span className="font-semibold tabular-nums">{stats.charCount}</span>
+        </div>
+        <div className="rounded-md border border-white/10 bg-white/[0.02] p-2">
+          空白数:{" "}
+          <span className="font-semibold tabular-nums">{stats.spaceCount}</span>
+        </div>
+        <div className="rounded-md border border-white/10 bg-white/[0.02] p-2">
+          文字数（空白込み/改行除く）:{" "}
+          <span className="font-semibold tabular-nums">
+            {stats.charCountWithSpaces}
+          </span>
+        </div>
+        <div className="rounded-md border border-white/10 bg-white/[0.02] p-2">
+          改行数:{" "}
+          <span className="font-semibold tabular-nums">
+            {stats.newlineCount}
+          </span>
+        </div>
+        <div className="rounded-md border border-white/10 bg-white/[0.02] p-2 col-span-2">
+          文字数（空白+改行込み）:{" "}
+          <span className="font-semibold tabular-nums">
+            {stats.charCountWithSpacesAndNewlines}
+          </span>{" "}
+          / 単語数:{" "}
+          <span className="font-semibold tabular-nums">{stats.wordCount}</span>
         </div>
       </div>
     </div>

@@ -1,11 +1,13 @@
-// app/useful_tools/diffTool/diffUtils.ts
+// app/useful_tools/diffTool/_components/diffUtils.ts
 
-export type DiffType = "equal" | "insert" | "delete";
+export type InlinePart = {
+  text: string;
+  kind: "equal" | "insert" | "delete";
+};
 
-export type DiffLine = {
-  type: DiffType;
-  before: string;
-  after: string;
+export type CharDiffResult = {
+  beforeParts: InlinePart[];
+  afterParts: InlinePart[];
 };
 
 export type TextStats = {
@@ -22,23 +24,16 @@ export function calcTextStats(text: string): TextStats {
   let newlineCount = 0;
 
   for (const ch of text) {
-    if (ch === "\n") {
-      newlineCount++;
-    } else if (ch === " " || ch === "　" || ch === "\t") {
-      spaceCount++;
-    }
+    if (ch === "\n") newlineCount++;
+    else if (ch === " " || ch === "　" || ch === "\t") spaceCount++;
   }
 
-  const totalLength = text.length; // 全体長（空白＋改行含む）
-  const charCountWithSpaces = totalLength - newlineCount; // 改行除く
-  const charCount = charCountWithSpaces - spaceCount; // 空白・改行除く
-  const charCountWithSpacesAndNewlines = charCountWithSpaces + newlineCount; // = totalLength
+  const totalLength = text.length;
+  const charCountWithSpaces = totalLength - newlineCount;
+  const charCount = charCountWithSpaces - spaceCount;
+  const charCountWithSpacesAndNewlines = totalLength;
 
-  const wordCount =
-    text
-      .trim()
-      .split(/\s+/)
-      .filter(Boolean).length || 0;
+  const wordCount = text.trim().split(/\s+/).filter(Boolean).length || 0;
 
   return {
     charCount,
@@ -51,55 +46,82 @@ export function calcTextStats(text: string): TextStats {
 }
 
 /**
- * 行単位の差分（LCS）
+ * 全文を「文字単位」で比較して差分を返す（LCS）
+ * - beforeParts: delete をハイライト（赤）
+ * - afterParts : insert をハイライト（緑）
+ *
+ * ※ difff.jp 的に「違う箇所だけ」塗るため、equal は通常表示
  */
-export function diffLines(aText: string, bText: string): DiffLine[] {
-  const a = aText.replace(/\r\n/g, "\n").split("\n");
-  const b = bText.replace(/\r\n/g, "\n").split("\n");
+export function diffChars(
+  beforeText: string,
+  afterText: string
+): CharDiffResult {
+  // Array.from はサロゲートペア（絵文字等）でも安全
+  const a = Array.from(beforeText.replace(/\r\n/g, "\n"));
+  const b = Array.from(afterText.replace(/\r\n/g, "\n"));
 
   const m = a.length;
   const n = b.length;
 
-  const lcs: number[][] = Array.from({ length: m + 1 }, () =>
+  const dp: number[][] = Array.from({ length: m + 1 }, () =>
     Array(n + 1).fill(0)
   );
 
   for (let i = 1; i <= m; i++) {
     for (let j = 1; j <= n; j++) {
-      if (a[i - 1] === b[j - 1]) {
-        lcs[i][j] = lcs[i - 1][j - 1] + 1;
-      } else {
-        lcs[i][j] = Math.max(lcs[i - 1][j], lcs[i][j - 1]);
-      }
+      if (a[i - 1] === b[j - 1]) dp[i][j] = dp[i - 1][j - 1] + 1;
+      else dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
     }
   }
 
-  const result: DiffLine[] = [];
+  type Op = { kind: "equal" | "insert" | "delete"; ch: string };
+  const ops: Op[] = [];
   let i = m;
   let j = n;
 
   while (i > 0 && j > 0) {
     if (a[i - 1] === b[j - 1]) {
-      result.push({ type: "equal", before: a[i - 1], after: b[j - 1] });
+      ops.push({ kind: "equal", ch: a[i - 1] });
       i--;
       j--;
-    } else if (lcs[i - 1][j] >= lcs[i][j - 1]) {
-      result.push({ type: "delete", before: a[i - 1], after: "" });
+    } else if (dp[i - 1][j] >= dp[i][j - 1]) {
+      ops.push({ kind: "delete", ch: a[i - 1] });
       i--;
     } else {
-      result.push({ type: "insert", before: "", after: b[j - 1] });
+      ops.push({ kind: "insert", ch: b[j - 1] });
       j--;
     }
   }
-
   while (i > 0) {
-    result.push({ type: "delete", before: a[i - 1], after: "" });
+    ops.push({ kind: "delete", ch: a[i - 1] });
     i--;
   }
   while (j > 0) {
-    result.push({ type: "insert", before: "", after: b[j - 1] });
+    ops.push({ kind: "insert", ch: b[j - 1] });
     j--;
   }
+  ops.reverse();
 
-  return result.reverse();
+  const beforeParts: InlinePart[] = [];
+  const afterParts: InlinePart[] = [];
+
+  const push = (arr: InlinePart[], kind: InlinePart["kind"], text: string) => {
+    if (!text) return;
+    const last = arr[arr.length - 1];
+    if (last && last.kind === kind) last.text += text;
+    else arr.push({ kind, text });
+  };
+
+  for (const op of ops) {
+    if (op.kind === "equal") {
+      push(beforeParts, "equal", op.ch);
+      push(afterParts, "equal", op.ch);
+    } else if (op.kind === "delete") {
+      push(beforeParts, "delete", op.ch);
+    } else {
+      push(afterParts, "insert", op.ch);
+    }
+  }
+
+  return { beforeParts, afterParts };
 }

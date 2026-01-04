@@ -1,64 +1,59 @@
-// app/useful_tools/diffTool/DiffViewer.tsx
+// app/useful_tools/diffTool/_components/DiffViewer.tsx
 "use client";
 
-import { DiffLine } from "./diffUtils";
+import type { CharDiffResult, InlinePart } from "./diffUtils";
 
-type Props = {
-  lines: DiffLine[];
-};
+function Parts({ parts }: { parts: InlinePart[] }) {
+  return (
+    <pre className="text-sm leading-7 text-zinc-100 whitespace-pre-wrap break-words font-mono">
+      {parts.map((p, idx) => {
+        const cls =
+          p.kind === "equal"
+            ? "text-zinc-100"
+            : p.kind === "delete"
+            ? "bg-rose-500/25 text-rose-100 rounded px-0.5"
+            : "bg-emerald-500/25 text-emerald-100 rounded px-0.5";
 
-export default function DiffViewer({ lines }: Props) {
-  if (lines.length === 0) {
+        return (
+          <span key={idx} className={cls}>
+            {p.text}
+          </span>
+        );
+      })}
+    </pre>
+  );
+}
+
+export default function DiffViewer({
+  result,
+}: {
+  result: CharDiffResult | null;
+}) {
+  if (!result) {
     return (
-      <p className="text-sm text-zinc-500">
-        まだ差分がありません。「差分を比較」ボタンを押してください。
-      </p>
+      <div className="text-zinc-400 text-sm">
+        まだ差分がありません。「差分を比較」を押すと結果が表示されます。
+      </div>
     );
   }
 
   return (
-    <div className="grid md:grid-cols-2 gap-4">
-      {/* BEFORE */}
-      <div className="bg-white/[0.02] rounded-md border border-white/10 p-4">
-        <h2 className="text-lg font-semibold text-zinc-100 mb-2">Before</h2>
-        <div className="border border-white/10 rounded-md overflow-auto bg-white/[0.02]">
-          <ul className="text-sm font-mono">
-            {lines.map((line, index) => {
-              const bg =
-                line.type === "delete" ? "bg-red-100 text-red-800" : "";
-              return (
-                <li
-                  key={index}
-                  className={`px-3 py-1 ${bg} hover:bg-white/[0.05]`}
-                >
-                  <span className="text-zinc-500 mr-2">{index + 1}</span>
-                  {line.before || ""}
-                </li>
-              );
-            })}
-          </ul>
+    <div className="grid md:grid-cols-2 gap-6">
+      <div className="rounded-md border border-white/10 bg-black/20 overflow-hidden">
+        <div className="px-3 py-2 text-xs font-semibold text-zinc-300 bg-white/[0.03] border-b border-white/10">
+          Before（削除は赤）
+        </div>
+        <div className="p-4">
+          <Parts parts={result.beforeParts} />
         </div>
       </div>
 
-      {/* AFTER */}
-      <div className="bg-white/[0.02] rounded-md border border-white/10 p-4">
-        <h2 className="text-lg font-semibold text-zinc-100 mb-2">After</h2>
-        <div className="border border-white/10 rounded-md overflow-auto bg-white/[0.02]">
-          <ul className="text-sm font-mono">
-            {lines.map((line, index) => {
-              const bg =
-                line.type === "insert" ? "bg-green-100 text-green-800" : "";
-              return (
-                <li
-                  key={index}
-                  className={`px-3 py-1 ${bg} hover:bg-white/[0.05]`}
-                >
-                  <span className="text-zinc-500 mr-2">{index + 1}</span>
-                  {line.after || ""}
-                </li>
-              );
-            })}
-          </ul>
+      <div className="rounded-md border border-white/10 bg-black/20 overflow-hidden">
+        <div className="px-3 py-2 text-xs font-semibold text-zinc-300 bg-white/[0.03] border-b border-white/10">
+          After（追加は緑）
+        </div>
+        <div className="p-4">
+          <Parts parts={result.afterParts} />
         </div>
       </div>
     </div>
