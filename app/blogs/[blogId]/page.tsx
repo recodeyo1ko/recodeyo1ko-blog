@@ -6,7 +6,7 @@ import hljs from "highlight.js";
 import Link from "next/link";
 
 export async function generateStaticParams() {
-  const { contents } = await getList();
+  const { contents } = await getList({ limit: 80 });
   return contents.map((blog: { id: string }) => ({ blogId: blog.id }));
 }
 

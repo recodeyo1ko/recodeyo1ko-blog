@@ -6,7 +6,7 @@ import { getList } from "../../libs/microcms";
 type Mode = "or" | "and";
 
 const fetchBlogsByCategory = async (categoryName: string) => {
-  const { contents } = await getList();
+  const { contents } = await getList({ limit: 80 });
   return contents.filter((blog: any) => blog.category?.name === categoryName);
 };
 
