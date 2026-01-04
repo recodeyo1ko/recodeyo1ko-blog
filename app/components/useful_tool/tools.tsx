@@ -86,6 +86,11 @@ export const TOOL_GROUPS: ToolGroup[] = [
         description: "ランダムなくじ引きを実行します",
         href: "/useful_tools/lottery",
       },
+      {
+        title: "ピクセルアート風画像変換",
+        description: "画像をピクセルアート風に変換します",
+        href: "/useful_tools/pixelizar",
+      },
     ],
   },
 ];
