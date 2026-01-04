@@ -1,6 +1,12 @@
 import { getList } from "../libs/microcms";
 import SidebarTree from "./SidebarTree";
 
+import {
+  TOOL_GROUPS as USEFUL_TOOL_GROUPS,
+  type ToolGroup as UsefulToolGroup,
+  type ToolItem as UsefulToolItem,
+} from "./useful_tool/tools";
+
 type Category = { id: string; name: string };
 type Tag = { id: string; name: string };
 
@@ -10,74 +16,20 @@ type Blog = {
   tags?: Tag[];
 };
 
-type ToolItem = { label: string; href: string; icon?: string };
-type ToolGroup = { title: string; items: ToolItem[] };
+// SidebarTree が期待する形（label/href/icon）
+type SidebarToolItem = { label: string; href: string; icon?: string };
+type SidebarToolGroup = { title: string; items: SidebarToolItem[] };
 
-const TOOL_GROUPS: ToolGroup[] = [
-  {
-    title: "単位変換系",
-    items: [
-      {
-        label: "人時・人日・人月 変換",
-        href: "/useful_tools/workTimeConversion",
-        icon: "",
-      },
-      {
-        label: "60進数⇔10進数変換",
-        href: "/useful_tools/convertBase60To10",
-        icon: "",
-      },
-      {
-        label: "Byte 単位変換",
-        href: "/useful_tools/byteConversion",
-        icon: "",
-      },
-    ],
-  },
-  {
-    title: "ファイル系",
-    items: [
-      {
-        label: "簡易ハッシュ差分チェッカー",
-        href: "/useful_tools/compressionTool",
-        icon: "",
-      },
-    ],
-  },
-  {
-    title: "テキスト処理系",
-    items: [
-      {
-        label: "差分チェッカー",
-        href: "/useful_tools/diffChecker",
-        icon: "",
-      },
-      { label: "文章マスキング", href: "/useful_tools/maskingTool", icon: "" },
-      { label: "半角⇔全角", href: "/useful_tools/hankakuZenkaku", icon: "" },
-      {
-        label: "改行コード判定・変換",
-        href: "/useful_tools/newLine",
-        icon: "",
-      },
-      {
-        label: "URLエンコード・デコード",
-        href: "/useful_tools/urlEncodeDecode",
-        icon: "",
-      },
-    ],
-  },
-  {
-    title: "その他便利ツール",
-    items: [
-      {
-        label: "会費計算機",
-        href: "/useful_tools/drinkPartyOrganizer",
-        icon: "",
-      },
-      { label: "くじ引き", href: "/useful_tools/lottery", icon: "" },
-    ],
-  },
-];
+function adaptToolGroups(groups: UsefulToolGroup[]): SidebarToolGroup[] {
+  return groups.map((g) => ({
+    title: g.title,
+    items: g.items.map((item: UsefulToolItem) => ({
+      label: item.title, // tools.tsx の title → Sidebar の label
+      href: item.href,
+      icon: "", // 必要になったら後で埋める
+    })),
+  }));
+}
 
 export default async function Sidebar() {
   const { contents } = await getList();
@@ -106,13 +58,15 @@ export default async function Sidebar() {
     }))
     .sort((a, b) => a.category.name.localeCompare(b.category.name, "ja"));
 
+  const toolGroups = adaptToolGroups(USEFUL_TOOL_GROUPS);
+
   return (
     <SidebarTree
       title="仕事を頑張るために"
       homeHref="/"
       authorName="recodeyo1ko"
       categoryTree={categoryTree}
-      toolGroups={TOOL_GROUPS}
+      toolGroups={toolGroups}
     />
   );
 }

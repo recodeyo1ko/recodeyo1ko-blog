@@ -1,4 +1,3 @@
-// app/useful_tools/diffTool/_components/DiffViewer.tsx
 "use client";
 
 import type { CharDiffResult, InlinePart } from "./diffUtils";
@@ -7,15 +6,14 @@ function Parts({ parts }: { parts: InlinePart[] }) {
   return (
     <pre className="text-sm leading-7 text-zinc-100 whitespace-pre-wrap break-words font-mono">
       {parts.map((p, idx) => {
+        // Web表示（ダーク）は今まで通り：差分は赤背景
         const cls =
           p.kind === "equal"
             ? "text-zinc-100"
-            : p.kind === "delete"
-            ? "bg-rose-500/25 text-rose-100 rounded px-0.5"
-            : "bg-emerald-500/25 text-emerald-100 rounded px-0.5";
+            : "bg-red-500/20 text-zinc-100 rounded px-0.5";
 
         return (
-          <span key={idx} className={cls}>
+          <span key={idx} className={cls} data-kind={p.kind}>
             {p.text}
           </span>
         );
@@ -31,28 +29,28 @@ export default function DiffViewer({
 }) {
   if (!result) {
     return (
-      <div className="text-zinc-400 text-sm">
-        まだ差分がありません。「差分を比較」を押すと結果が表示されます。
+      <div className="px-4 py-6 text-sm text-zinc-500">
+        まだ差分がありません。
       </div>
     );
   }
 
   return (
-    <div className="grid md:grid-cols-2 gap-6">
-      <div className="rounded-md border border-white/10 bg-black/20 overflow-hidden">
-        <div className="px-3 py-2 text-xs font-semibold text-zinc-300 bg-white/[0.03] border-b border-white/10">
-          Before（削除は赤）
+    <div className="overflow-hidden rounded-md">
+      <div className="grid grid-cols-2 border-b border-white/10 bg-white/[0.02]">
+        <div className="px-4 py-2 text-xs text-zinc-400">
+          Before（元テキスト）
         </div>
-        <div className="p-4">
-          <Parts parts={result.beforeParts} />
+        <div className="px-4 py-2 text-xs text-zinc-400 border-l border-white/10">
+          After（変更後）
         </div>
       </div>
 
-      <div className="rounded-md border border-white/10 bg-black/20 overflow-hidden">
-        <div className="px-3 py-2 text-xs font-semibold text-zinc-300 bg-white/[0.03] border-b border-white/10">
-          After（追加は緑）
+      <div className="grid grid-cols-2">
+        <div className="px-4 py-4">
+          <Parts parts={result.beforeParts} />
         </div>
-        <div className="p-4">
+        <div className="px-4 py-4 border-l border-white/10">
           <Parts parts={result.afterParts} />
         </div>
       </div>

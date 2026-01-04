@@ -47,16 +47,13 @@ export function calcTextStats(text: string): TextStats {
 
 /**
  * 全文を「文字単位」で比較して差分を返す（LCS）
- * - beforeParts: delete をハイライト（赤）
- * - afterParts : insert をハイライト（緑）
- *
- * ※ difff.jp 的に「違う箇所だけ」塗るため、equal は通常表示
+ * - beforeParts: delete を赤ハイライト
+ * - afterParts : insert を緑ハイライト
  */
 export function diffChars(
   beforeText: string,
   afterText: string
 ): CharDiffResult {
-  // Array.from はサロゲートペア（絵文字等）でも安全
   const a = Array.from(beforeText.replace(/\r\n/g, "\n"));
   const b = Array.from(afterText.replace(/\r\n/g, "\n"));
 
