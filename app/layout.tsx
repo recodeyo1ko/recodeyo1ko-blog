@@ -9,6 +9,11 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "仕事を頑張るために",
   description: "Studying to work hard",
+  icons: {
+    icon: "/re-icon.svg",
+    shortcut: "/re-icon.svg",
+    apple: "/re-icon.svg",
+  },
 };
 
 export default function RootLayout({
