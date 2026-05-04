@@ -155,8 +155,13 @@ export default function SidebarTree({
     <div className="h-full px-3 py-4 text-zinc-100 flex flex-col bg-transparent">
       {/* タイトル */}
       <div className="px-2">
-        <div className="text-sm font-semibold text-zinc-100 truncate">
-          {title}
+        <div className="flex items-center gap-2 text-sm font-semibold text-zinc-100 truncate">
+          <img
+            src="/re-icon.svg"
+            alt="ブログアイコン"
+            className="w-5 h-5 shrink-0"
+          />
+          <span className="truncate">{title}</span>
         </div>
         <div className="mt-5 border-t border-white/10" />
       </div>
