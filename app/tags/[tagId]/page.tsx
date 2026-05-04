@@ -1,11 +1,23 @@
 import Blog from "../../components/blog/Blog";
-import { getList } from "../../libs/microcms";
+import { getList, getTagList } from "../../libs/microcms";
+
+const fetchTagIdByName = async (tagName: string) => {
+  const { contents } = await getTagList({
+    limit: 1,
+    filters: `name[equals]${tagName}`,
+  });
+  return contents[0]?.id ?? null;
+};
 
 const fetchBlogsByTag = async (tagName: string) => {
-  const { contents } = await getList({ limit: 80 });
-  return contents.filter((blog: any) =>
-    blog.tags?.some((tag: any) => tag.name === tagName)
-  );
+  const tagId = await fetchTagIdByName(tagName);
+  if (!tagId) return [];
+
+  const { contents } = await getList({
+    limit: 80,
+    filters: `tags[contains]${tagId}`,
+  });
+  return contents;
 };
 
 const TagPage = async ({ params }: { params: { tagId: string } }) => {

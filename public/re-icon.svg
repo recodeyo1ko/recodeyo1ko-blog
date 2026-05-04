@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="re blog icon">
+  <defs>
+    <linearGradient id="bgGradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#020617" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+  </defs>
+
+  <rect width="64" height="64" rx="16" fill="url(#bgGradient)" />
+  <text
+    x="50%"
+    y="52%"
+    text-anchor="middle"
+    dominant-baseline="middle"
+    font-family="Inter, ui-sans-serif, system-ui, sans-serif"
+    font-size="52"
+    font-weight="900"
+    letter-spacing="0.02em"
+    fill="#7dd3fc"
+    stroke="#38bdf8"
+    stroke-width="1"
+  >
+    Re
+  </text>
+</svg>

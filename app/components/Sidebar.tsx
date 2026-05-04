@@ -53,7 +53,7 @@ export default async function Sidebar() {
     .map((v) => ({
       category: v.category,
       tags: Array.from(v.tags.values()).sort((a, b) =>
-        a.name.localeCompare(b.name, "ja")
+        a.name.localeCompare(b.name, "ja"),
       ),
     }))
     .sort((a, b) => a.category.name.localeCompare(b.category.name, "ja"));
@@ -65,7 +65,7 @@ export default async function Sidebar() {
       title="仕事を頑張るために"
       homeHref="/"
       blogHref="/blogs"
-      authorName="recodeyo1ko"
+      authorName="reyo1ko"
       categoryTree={categoryTree}
       toolGroups={toolGroups}
     />
