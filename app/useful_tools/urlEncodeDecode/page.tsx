@@ -25,14 +25,17 @@ const parseUrlLike = (input: string) => {
 
 export default function Page() {
   const [raw, setRaw] = useState("");
-  const [baseUrl, setBaseUrl] = useState("");
+  const [encodedBaseUrl, setEncodedBaseUrl] = useState("");
+  const [decodedBaseUrl, setDecodedBaseUrl] = useState("");
   const [pairs, setPairs] = useState<KV[]>([]);
   const [hash, setHash] = useState("");
+  const [isDecodedMode, setIsDecodedMode] = useState(false);
 
   const detect = () => {
     const text = raw.trim();
     if (!text) {
-      setBaseUrl("");
+      setEncodedBaseUrl("");
+      setDecodedBaseUrl("");
       setPairs([]);
       setHash("");
       return;
@@ -43,10 +46,14 @@ export default function Page() {
     // hash
     setHash(u.hash || "");
 
-    // baseURL（相対URLの場合は origin を除去）
-    const isDummy = u.origin === "https://dummy.local";
-    const base = (isDummy ? "" : u.origin) + u.pathname;
-    setBaseUrl(base);
+    // エンコードされたbaseURL
+    const encodedBase =
+      (u.origin === "https://dummy.local" ? "" : u.origin) + u.pathname;
+    setEncodedBaseUrl(encodedBase);
+
+    // デコードされたbaseURL
+    const decodedBase = `${u.protocol}//${u.hostname}${decodeURI(u.pathname)}`;
+    setDecodedBaseUrl(decodedBase);
 
     // query -> 配列に展開（URLSearchParamsはデコード済みを返す）
     const next: KV[] = [];
@@ -62,8 +69,8 @@ export default function Page() {
       sp.set(k, p.value); // URLSearchParamsがエンコード
     }
     const qs = sp.toString();
-    return `${baseUrl}${qs ? `?${qs}` : ""}${hash || ""}`;
-  }, [baseUrl, pairs, hash]);
+    return `${encodedBaseUrl}${qs ? `?${qs}` : ""}${hash || ""}`;
+  }, [encodedBaseUrl, pairs, hash]);
 
   const decodedPreview = useMemo(() => {
     // 見た目用のデコード寄り表示（実URLは encodedUrl）
@@ -74,12 +81,12 @@ export default function Page() {
       sp.set(safeDecode(k), safeDecode(p.value));
     }
     const qs = sp.toString();
-    return `${baseUrl}${qs ? `?${safeDecode(qs)}` : ""}${hash || ""}`;
-  }, [baseUrl, pairs, hash]);
+    return `${decodedBaseUrl}${qs ? `?${safeDecode(qs)}` : ""}${hash || ""}`;
+  }, [decodedBaseUrl, pairs, hash]);
 
   const updatePair = (idx: number, patch: Partial<KV>) => {
     setPairs((prev) =>
-      prev.map((p, i) => (i === idx ? { ...p, ...patch } : p))
+      prev.map((p, i) => (i === idx ? { ...p, ...patch } : p)),
     );
   };
 
@@ -89,7 +96,8 @@ export default function Page() {
 
   const clearAll = () => {
     setRaw("");
-    setBaseUrl("");
+    setEncodedBaseUrl("");
+    setDecodedBaseUrl("");
     setPairs([]);
     setHash("");
   };
@@ -150,16 +158,50 @@ export default function Page() {
           <div className="mt-6 border-t border-white/10 pt-4 space-y-4">
             <div>
               <label className="block text-sm font-semibold text-zinc-300 mb-1">
-                baseURL
+                エンコードされたbaseURL
               </label>
               <input
-                value={baseUrl}
-                onChange={(e) => setBaseUrl(e.target.value)}
+                value={encodedBaseUrl}
+                onChange={(e) => {
+                  setEncodedBaseUrl(e.target.value);
+                  try {
+                    const u = new URL(e.target.value);
+                    const decoded = `${u.protocol}//${u.hostname}${decodeURI(u.pathname)}`;
+                    setDecodedBaseUrl(decoded);
+                  } catch {
+                    setDecodedBaseUrl(e.target.value);
+                  }
+                }}
                 className="w-full bg-white/[0.02] border border-white/10 rounded-md px-3 py-2 font-mono text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-500"
-                placeholder="https://example.com/path"
+                placeholder="http://xn--bdk1d3b.net/%E3%81%AC%E3%82%8B%E3%81%BD.html"
               />
               <p className="text-xs text-zinc-500 mt-1">
-                例: <span className="font-mono">https://example.com/path</span>
+                エンコードされたURLを入力してください。自動でデコードされたバージョンが下に表示されます。
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-zinc-300 mb-1">
+                デコードされたbaseURL
+              </label>
+              <input
+                value={decodedBaseUrl}
+                onChange={(e) => {
+                  setDecodedBaseUrl(e.target.value);
+                  try {
+                    const u = new URL(e.target.value);
+                    setEncodedBaseUrl(
+                      u.href.replace("?" + u.search, "").replace(u.hash, ""),
+                    );
+                  } catch {
+                    setEncodedBaseUrl(e.target.value);
+                  }
+                }}
+                className="w-full bg-white/[0.02] border border-white/10 rounded-md px-3 py-2 font-mono text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-500"
+                placeholder="http://ツール.net/ぬるぽ.html"
+              />
+              <p className="text-xs text-zinc-500 mt-1">
+                デコードされたURLを入力してください。自動でエンコードされたバージョンが上に表示されます。
               </p>
             </div>
 
