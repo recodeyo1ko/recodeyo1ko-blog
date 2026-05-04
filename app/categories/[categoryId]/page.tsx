@@ -1,13 +1,27 @@
 import Link from "next/link";
 import Blog from "../../components/blog/Blog";
 import TagFilterSelectorMulti from "../../components/blog/TagFilterSelectorMulti";
-import { getList } from "../../libs/microcms";
+import { getCategoryList, getList } from "../../libs/microcms";
 
 type Mode = "or" | "and";
 
+const fetchCategoryIdByName = async (categoryName: string) => {
+  const { contents } = await getCategoryList({
+    limit: 1,
+    filters: `name[equals]${categoryName}`,
+  });
+  return contents[0]?.id ?? null;
+};
+
 const fetchBlogsByCategory = async (categoryName: string) => {
-  const { contents } = await getList({ limit: 80 });
-  return contents.filter((blog: any) => blog.category?.name === categoryName);
+  const categoryId = await fetchCategoryIdByName(categoryName);
+  if (!categoryId) return [];
+
+  const { contents } = await getList({
+    limit: 80,
+    filters: `category[equals]${categoryId}`,
+  });
+  return contents;
 };
 
 const extractTagsFromBlogs = (blogs: any[]) => {
@@ -21,7 +35,7 @@ const extractTagsFromBlogs = (blogs: any[]) => {
   });
 
   return Array.from(map.values()).sort((a, b) =>
-    String(a.name).localeCompare(String(b.name), "ja")
+    String(a.name).localeCompare(String(b.name), "ja"),
   );
 };
 
@@ -45,7 +59,7 @@ const parseMode = (searchParams?: { mode?: string | string[] }): Mode => {
 const filterBlogsByTags = (
   blogs: any[],
   selectedTags: string[],
-  mode: "or" | "and"
+  mode: "or" | "and",
 ) => {
   if (selectedTags.length === 0) return blogs;
 
@@ -59,7 +73,7 @@ const filterBlogsByTags = (
 
   // OR：どれか含む
   return blogs.filter((blog) =>
-    blog.tags?.some((t: any) => selectedTags.includes(t?.name))
+    blog.tags?.some((t: any) => selectedTags.includes(t?.name)),
   );
 };
 
@@ -81,7 +95,7 @@ const CategoryPage = async ({
 
   const counts = tags.reduce((acc: Record<string, number>, tag: any) => {
     acc[tag.name] = allBlogs.filter((b: any) =>
-      b.tags?.some((t: any) => t?.name === tag.name)
+      b.tags?.some((t: any) => t?.name === tag.name),
     ).length;
     return acc;
   }, {});
